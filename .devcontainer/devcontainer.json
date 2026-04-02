@@ -1,0 +1,18 @@
+{
+  "name": "Moodle 5.2 Vibe Coding",
+  "image": "mcr.microsoft.com/devcontainers/php:8.3",
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/mariadb:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "github.copilot",
+        "github.copilot-chat",
+        "bmewburn.vscode-intelephense-client"
+      ]
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libzip-dev libpng-dev libicu-dev libxml2-dev && sudo docker-php-ext-install mysqli zip gd intl xml soap opcache",
+  "forwardPorts": [8000, 3306]
+}
