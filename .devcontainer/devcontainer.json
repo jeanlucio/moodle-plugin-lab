@@ -1,18 +1,31 @@
+/*
+ * @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
+ */
 {
+  // Define o "nome de batismo" do ambiente, que aparece no canto do VS Code.
   "name": "Moodle 5.2 Vibe Coding",
-  "image": "mcr.microsoft.com/devcontainers/php:8.3",
-  "features": {
-    "ghcr.io/devcontainers-contrib/features/mariadb:1": {}
+  
+  // Diz ao Codespaces para usar o arquivo "Dockerfile" ao invés de uma máquina padrão.
+  // É através dele que o servidor nasce com PHP, MariaDB e as extensões instaladas.
+  "build": {
+    "dockerfile": "Dockerfile"
   },
+  
+  // Automatiza a instalação de ferramentas no VS Code do aluno.
   "customizations": {
     "vscode": {
+      // Lista de extensões que já vêm instaladas de fábrica na máquina:
       "extensions": [
-        "github.copilot",
-        "github.copilot-chat",
-        "bmewburn.vscode-intelephense-client"
+        "github.copilot",                      // IA para autocompletar código
+        "github.copilot-chat",                 // IA para tirar dúvidas de programação no chat
+        "bmewburn.vscode-intelephense-client"  // O melhor corretor e assistente para a linguagem PHP
       ]
     }
   },
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libzip-dev libpng-dev libicu-dev libxml2-dev && sudo docker-php-ext-install mysqli zip gd intl xml soap opcache",
+  
+  // Liga o banco de dados MariaDB automaticamente assim que o VS Code abrir.
+  "postStartCommand": "sudo service mariadb start",
+  
+  // Libera as portas que usaremos para acessar o site (8000) e o banco de dados (3306).
   "forwardPorts": [8000, 3306]
 }
