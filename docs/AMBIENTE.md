@@ -92,7 +92,8 @@ php moodle/public/admin/tool/phpunit/cli/init.php
 
 | Comando | O que faz |
 |---|---|
-| `plugin-new <tipo> <nome>` | cria o esqueleto de um plugin + SCOPE.md + git init |
+| `plugin-new <tipo> <nome>` | cria o esqueleto de um plugin + SCOPE.md + regras da IA + git init |
+| `plugin-rules [tipo/nome]` | (re)copia `.github/copilot-instructions.md` + `instructions/` para um plugin |
 | `plugin-upgrade` | `admin/cli/upgrade.php` + `purge_caches.php` |
 | `set-author "Nome"` | muda o nome dos cabeçalhos `@copyright` |
 | `moodle-check <arquivo.php>` | `local_moodlecheck` (PHPDoc, o mesmo gate do CI) |
