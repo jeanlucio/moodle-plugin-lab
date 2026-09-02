@@ -116,9 +116,11 @@ Para publicar no seu GitHub (cria o repositório `moodle-<frankenstyle>`):
 plugin-publish
 ```
 
-> `plugin-publish` contorna o token limitado do Codespace — na primeira vez ele pede
-> `gh auth login` (GitHub.com → HTTPS → Login with a web browser). Depois disso, `git push`
-> normal funciona.
+> `plugin-publish` contorna o token limitado do Codespace. Na **primeira vez neste
+> Codespace** ele pede `gh auth login` (GitHub.com → HTTPS → Login with a web browser).
+> Feito isso **uma vez**, vale para todos os seus plugins — a credencial fica salva e
+> sobrevive a parar/ligar o Codespace (só some se você **reconstruir** ou **deletar** ele).
+> Depois do publish, `git push` normal funciona nesse plugin.
 
 > O código do Moodle e os dados do site (`moodle/`, `moodledata/`) **não** são versionados
 > aqui — só o seu plugin. Se você **deletar** o Codespace, só volta o que você tiver
