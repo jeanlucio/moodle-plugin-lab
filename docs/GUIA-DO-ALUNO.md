@@ -5,14 +5,29 @@ Você não instala nada: o Codespace já sobe com o Moodle 5.2 rodando.
 
 ---
 
+## 0. O que você precisa antes
+
+- Uma **conta no GitHub** (a sua — não a do professor).
+- **GitHub Copilot** ativo nessa conta. Se você é estudante, ative o **GitHub Student
+  Developer Pack** (github.com/education) — ele dá o **Copilot Pro de graça**.
+- Nada para instalar no seu computador. Tudo roda no navegador.
+
+Você **não** faz fork nem cópia deste repositório. Ele é a bancada compartilhada: você abre
+um Codespace a partir dele (a máquina nasce **na sua conta**, com o **seu** Copilot) e o
+código que você desenvolve vai para **repositórios seus** (passo 5).
+
 ## 1. Abrir o ambiente
 
-1. No repositório do laboratório, clique em **Code → Codespaces → Create codespace**.
+1. Acesse o repositório do laboratório e clique em **Code → Codespaces →
+   Create codespace on main**.
 2. Espere o VS Code abrir no navegador (a primeira vez leva ~1 min; depois, segundos).
 3. No primeiro terminal, confirme **seu nome completo** quando for perguntado — ele vai
    nos cabeçalhos de licença dos arquivos que você criar.
 4. A aba do **Moodle** abre sozinha na porta 8000. Se não abrir, clique na aba **Ports**
    e no ícone de globo da porta 8000.
+
+> O Codespace **para sozinho** após 30 min sem uso (não gasta cota parado). Para retomar:
+> github.com/codespaces → clique no seu. Não crie um novo toda vez.
 
 **Login do site:** usuário `admin`, senha `Sandbox123!`
 

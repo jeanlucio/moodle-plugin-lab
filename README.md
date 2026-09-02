@@ -34,8 +34,12 @@ Resumo: `Code → Codespaces → Create` · site na porta 8000 · login `admin` 
 
 ## Para o professor
 
+- **Distribuição:** repositório **público**; cada aluno abre um Codespace direto neste repo
+  (a máquina e o Copilot são da conta do aluno). O trabalho de cada aluno vai para
+  repositórios próprios dele. Não use fork nem template.
 - **Ligar Prebuilds:** repositório → Settings → Codespaces → Set up prebuild (sem isso a
-  primeira abertura leva ~4 min em vez de ~30 s).
+  primeira abertura leva ~4 min em vez de ~30 s). Em repo público os minutos de Actions do
+  prebuild são gratuitos; só o snapshot conta na cota de storage de Codespaces do professor.
 - **Versão do Moodle:** `MOODLE_BRANCH` em `.devcontainer/setup.sh`.
 - **Revisão por IA no pre-commit:** desligada (`SKIP_AI=1` em `.devcontainer/devcontainer.json`).
   Para ligar numa turma, colocar chaves num Codespaces secret da organização e mudar para
