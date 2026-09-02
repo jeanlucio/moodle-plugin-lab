@@ -46,6 +46,7 @@
       ],
       "settings": {
         "workbench.colorTheme": "Default Dark Modern",
+        "workbench.startupEditor": "none",
         "files.eol": "\n",
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true,

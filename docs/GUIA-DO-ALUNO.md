@@ -103,7 +103,18 @@ gh repo create meuplugino --private --source=. --push
 
 ---
 
-## 6. Referência
+## 6. Problemas comuns
+
+| Sintoma | O que fazer |
+|---|---|
+| **HTTP 401** ao abrir o Moodle | Abra pela aba **Portas → porta 8000 → globo**, não por URL salva. Se persistir, a porta já está configurada como pública — recarregue. |
+| **"Could not register service worker" / erro de webview** | Cosmético — afeta só o preview de Markdown. Terminal, edição, Copilot Chat e o Moodle funcionam. Causa: extensão de privacidade do navegador. Sumindo em janela anônima = é extensão; libere `*.github.dev` nela, ou use o VS Code Desktop. |
+| Site fora do ar depois de reabrir o Codespace | `bash .devcontainer/start.sh` |
+| Moodle não vê um plugin/mudança nova | `plugin-upgrade` |
+| Commit bloqueado pelo hook | Corrija o que o PHPCS apontou (`phpcbf <arquivo>` conserta boa parte). Não burle. |
+| Copilot não segue as regras | Troque o modelo para **Claude Sonnet** ou **GPT-4.1** no seletor do Copilot Chat. |
+
+## 7. Referência
 
 - `docs/REGRAS-DE-CODIGO.md` — regras de código completas e comentadas.
 - `docs/AMBIENTE.md` — como o ambiente funciona por dentro (banco, servidor, caches).
