@@ -24,7 +24,11 @@ if [ -f "$TARGET" ]; then
     TESTPATH="$TARGET"
 else
     TESTPATH="$PUBLIC/${TARGET#/}/tests"
-    [ -d "$TESTPATH" ] || { echo "erro: sem tests/ em $TESTPATH" >&2; exit 1; }
+    if [ ! -d "$TESTPATH" ]; then
+        echo "$TARGET ainda não tem testes."
+        echo "Crie tests/ espelhando classes/ (ex.: tests/local/<coisa>_test.php)."
+        exit 0
+    fi
 fi
 
 cd "$PUBLIC"
