@@ -108,7 +108,7 @@ gh repo create meuplugino --private --source=. --push
 | Sintoma | O que fazer |
 |---|---|
 | **HTTP 401** ao abrir o Moodle | Abra pela aba **Portas → porta 8000 → globo**, não por URL salva. Se persistir, a porta já está configurada como pública — recarregue. |
-| **"Could not register service worker" / erro de webview** | Cosmético — afeta só o preview de Markdown. Terminal, edição, Copilot Chat e o Moodle funcionam. Causa: extensão de privacidade do navegador. Sumindo em janela anônima = é extensão; libere `*.github.dev` nela, ou use o VS Code Desktop. |
+| **"Could not register service worker" / erro de webview** | Afeta só webviews (preview de Markdown etc.) — terminal, edição, Copilot Chat e o Moodle funcionam. **Se o navegador mostrar um aviso pedindo permissão, clique em permitir.** Se não pedir e o erro persistir: é bloqueio de cookies de terceiros ou extensão de privacidade — libere `[*.]github.dev`, `[*.]vscode-cdn.net` e `[*.]visualstudio.com`, teste em janela anônima, ou use **`Ctrl+Shift+P` → "Open in VS Code Desktop"** (não tem esse problema). O Edge costuma pedir a permissão e resolver na hora; alguns Chrome com extensões, não. |
 | Site fora do ar depois de reabrir o Codespace | `bash .devcontainer/start.sh` |
 | Moodle não vê um plugin/mudança nova | `plugin-upgrade` |
 | Commit bloqueado pelo hook | Corrija o que o PHPCS apontou (`phpcbf <arquivo>` conserta boa parte). Não burle. |
