@@ -25,6 +25,8 @@ Todo plugin tem `classes/privacy/provider.php`. Três casos:
   indefinida por omissão.
 - Teste de regressão: afirmar que as chaves declaradas são **iguais** às colunas reais
   (via `$DB->get_columns()`, menos `id`) — não afirmar chave por chave.
-- Plugin que chama IA/serviço externo **diretamente** DEVE declarar cada provider aqui e a
-  disclosure no README (o Directory exige). Se só consome via um hub (`local_aihub`), o
-  Privacy Provider do hub já cobre — pode usar `null_provider`.
+- Plugin que chama IA/serviço externo **diretamente** DEVE declarar cada provider aqui
+  (com `add_external_location_link()`, informando o `prompt`/dados transmitidos) e a
+  disclosure no README — o Directory exige. Se o plugin só alcança o serviço **através de
+  outro plugin** (dependência soft), o Privacy Provider **daquele** plugin é quem declara —
+  desde que você genuinamente nunca chame o serviço direto.

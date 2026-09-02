@@ -1,7 +1,7 @@
 # O ambiente por dentro
 
-Referência de infraestrutura do Moodle Plugin Lab. Análogo ao `CLAUDE.md` de
-infraestrutura de um ambiente Docker, mas para o Codespace.
+Referência de infraestrutura do Moodle Plugin Lab — como o Codespace está montado
+(banco, servidor, ciclo de vida, ferramentas).
 
 ## Topologia
 
