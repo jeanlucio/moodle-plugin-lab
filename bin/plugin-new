@@ -242,11 +242,15 @@ jobs:
       - run: moodle-plugin-ci behat --profile chrome
 EOF
 
-# Regras de código para a IA (Copilot) — copiadas pra dentro do plugin para que
-# viajem junto quando ele virar um repositório próprio.
+# Regras de CÓDIGO para a IA (Copilot) — copiadas pra dentro do plugin para que
+# viajem junto quando ele virar um repositório próprio. O ambiente.instructions.md
+# NÃO é copiado (descreve o Codespace do lab, não vale fora dele).
 mkdir -p "$TARGET/.github/instructions"
 cp "$LAB_ROOT/.github/copilot-instructions.md" "$TARGET/.github/"
-cp "$LAB_ROOT/.github/instructions/"*.instructions.md "$TARGET/.github/instructions/"
+for f in "$LAB_ROOT"/.github/instructions/*.instructions.md; do
+    [ "$(basename "$f")" = "ambiente.instructions.md" ] && continue
+    cp "$f" "$TARGET/.github/instructions/"
+done
 
 # SCOPE.md — primeiro trabalho: preencher este documento antes de codar.
 cp "$LAB_ROOT/docs/TEMPLATE_SCOPE.md" "$TARGET/SCOPE.md"
