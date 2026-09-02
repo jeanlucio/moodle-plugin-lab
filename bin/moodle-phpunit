@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Roda a suíte PHPUnit de UM plugin (ou de um arquivo de teste).
+#
+#   moodle-phpunit <tipo/nome>            ex.: moodle-phpunit local/gradeboard
+#   moodle-phpunit <caminho/para/x_test.php>
+#
+# O ambiente de teste é preparado uma vez no prebuild; se precisar recriar, rode:
+#   php moodle/public/admin/tool/phpunit/cli/init.php
+set -euo pipefail
+
+MOODLE_ROOT="$(cd "$(dirname "$0")/../moodle" && pwd)"
+PUBLIC="$MOODLE_ROOT/public"
+PHPUNIT="$MOODLE_ROOT/vendor/bin/phpunit"
+
+if [ ! -x "$PHPUNIT" ]; then
+    echo "erro: PHPUnit não instalado ($PHPUNIT)." >&2
+    echo "      rode: cd moodle && composer install" >&2
+    exit 1
+fi
+
+TARGET="${1:?uso: moodle-phpunit <tipo/nome> | <arquivo_test.php>}"
+
+if [ -f "$TARGET" ]; then
+    TESTPATH="$TARGET"
+else
+    TESTPATH="$PUBLIC/${TARGET#/}/tests"
+    [ -d "$TESTPATH" ] || { echo "erro: sem tests/ em $TESTPATH" >&2; exit 1; }
+fi
+
+cd "$PUBLIC"
+exec php "$PHPUNIT" --bootstrap "$PUBLIC/lib/phpunit/bootstrap.php" \
+    --no-coverage "$TESTPATH"

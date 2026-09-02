@@ -1,0 +1,291 @@
+#!/usr/bin/env bash
+# Cria o esqueleto mínimo de um plugin Moodle dentro da árvore do site, já como seu
+# próprio repositório git, e copia o TEMPLATE_SCOPE para o plugin (primeiro trabalho).
+#
+#   plugin-new <tipo> <nome>
+#
+#   <tipo> : local | block | mod | filter | report   (outros são aceitos com aviso)
+#   <nome> : curto, minúsculo, só letras — o "name" do Frankenstyle (ex.: gradeboard)
+#
+# Exemplo:  plugin-new local gradeboard   ->   moodle/public/local/gradeboard  (local_gradeboard)
+set -euo pipefail
+
+LAB_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PUBLIC="$LAB_ROOT/moodle/public"
+AUTHOR="$(cat "$HOME/.config/moodle-plugin-lab/author" 2>/dev/null || echo 'Seu Nome')"
+YEAR="$(date +%Y)"
+
+TYPE="${1:-}"
+NAME="${2:-}"
+if [ -z "$TYPE" ] || [ -z "$NAME" ]; then
+    sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
+    exit 2
+fi
+
+if ! [[ "$NAME" =~ ^[a-z][a-z0-9]*$ ]]; then
+    echo "erro: o nome deve ser minúsculo, começar com letra e não ter '_' nem '-'." >&2
+    echo "      (o nome de exibição, esse sim, pode ser em português — vai na lang string)" >&2
+    exit 1
+fi
+
+case "$TYPE" in
+    local|filter|report) DIR="$TYPE" ;;
+    block)               DIR="blocks" ;;
+    mod)                 DIR="mod" ;;
+    *)
+        DIR="$TYPE"
+        echo "aviso: tipo '$TYPE' fora do conjunto comum de aula (local/block/mod/filter/report)."
+        echo "       Confira o diretório correto para esse tipo antes de prosseguir."
+        ;;
+esac
+
+COMPONENT="${TYPE}_${NAME}"
+TARGET="$PUBLIC/$DIR/$NAME"
+
+if [ -e "$TARGET" ]; then
+    echo "erro: $TARGET já existe." >&2
+    exit 1
+fi
+
+GPL_PHP="<?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>."
+
+mkdir -p "$TARGET/lang/en" "$TARGET/lang/pt_br"
+
+# version.php
+cat > "$TARGET/version.php" <<EOF
+$GPL_PHP
+
+/**
+ * Plugin version and metadata.
+ *
+ * @package    $COMPONENT
+ * @copyright  $YEAR $AUTHOR
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+\$plugin->component = '$COMPONENT';
+\$plugin->version   = ${YEAR}$(date +%m%d)00;
+\$plugin->requires  = 2024100700;
+\$plugin->maturity  = MATURITY_ALPHA;
+\$plugin->release   = '0.1.0';
+EOF
+
+# lang/en
+cat > "$TARGET/lang/en/$COMPONENT.php" <<EOF
+$GPL_PHP
+
+/**
+ * English strings for $COMPONENT.
+ *
+ * @package    $COMPONENT
+ * @copyright  $YEAR $AUTHOR
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+\$string['pluginname'] = '${NAME}';
+EOF
+
+# lang/pt_br (mantido em sincronia com o en desde o primeiro commit)
+cat > "$TARGET/lang/pt_br/$COMPONENT.php" <<EOF
+$GPL_PHP
+
+/**
+ * Brazilian Portuguese strings for $COMPONENT.
+ *
+ * @package    $COMPONENT
+ * @copyright  $YEAR $AUTHOR
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+\$string['pluginname'] = '${NAME}';
+EOF
+
+# db/upgrade.php — o validador do Directory rejeita o zip sem este arquivo.
+mkdir -p "$TARGET/db"
+cat > "$TARGET/db/upgrade.php" <<EOF
+$GPL_PHP
+
+/**
+ * Upgrade steps for $COMPONENT.
+ *
+ * @package    $COMPONENT
+ * @copyright  $YEAR $AUTHOR
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Execute $COMPONENT upgrade from the given old version.
+ *
+ * @param int \$oldversion the version we are upgrading from
+ * @return bool
+ */
+function xmldb_${COMPONENT}_upgrade(int \$oldversion): bool {
+    return true;
+}
+EOF
+
+# block: classe principal (obrigatória para o plugin carregar)
+if [ "$TYPE" = "block" ]; then
+    cat > "$TARGET/block_$NAME.php" <<EOF
+$GPL_PHP
+
+/**
+ * Block $NAME.
+ *
+ * @package    $COMPONENT
+ * @copyright  $YEAR $AUTHOR
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Block $NAME definition.
+ */
+class block_$NAME extends block_base {
+    #[\\Override]
+    public function init(): void {
+        \$this->title = get_string('pluginname', '$COMPONENT');
+    }
+
+    #[\\Override]
+    public function get_content(): ?stdClass {
+        if (\$this->content !== null) {
+            return \$this->content;
+        }
+        \$this->content = new stdClass();
+        \$this->content->text = '';
+        \$this->content->footer = '';
+        return \$this->content;
+    }
+}
+EOF
+fi
+
+# CI (moodle-plugin-ci) — roda a cada push depois que o plugin virar repo no GitHub.
+mkdir -p "$TARGET/.github/workflows"
+cat > "$TARGET/.github/workflows/ci.yml" <<'EOF'
+name: Moodle Plugin CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.3'
+            moodle-branch: 'MOODLE_502_STABLE'
+            database: mariadb
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+        ports: [3306:3306]
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: plugin }
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, pgsql, mysqli, gd, zip, soap, intl
+          ini-values: max_input_vars=5000
+          coverage: none
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Instalar moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist \
+            moodlehq/moodle-plugin-ci ci ^4
+          echo "$(pwd)/ci/bin" >> "$GITHUB_PATH"
+          echo "$(pwd)/ci/vendor/bin" >> "$GITHUB_PATH"
+      - name: Instalar ambiente
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+        env:
+          DB: ${{ matrix.database }}
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+      - run: moodle-plugin-ci phplint
+      - run: moodle-plugin-ci phpmd
+      - run: moodle-plugin-ci phpcs --max-warnings 0
+      - run: moodle-plugin-ci phpdoc --max-warnings 0
+      - run: moodle-plugin-ci validate
+      - run: moodle-plugin-ci savepoints
+      - run: moodle-plugin-ci mustache
+      - run: moodle-plugin-ci grunt --max-lint-warnings 0
+      - run: moodle-plugin-ci phpunit
+      - run: moodle-plugin-ci behat --profile chrome
+EOF
+
+# SCOPE.md — primeiro trabalho: preencher este documento antes de codar.
+cp "$LAB_ROOT/docs/TEMPLATE_SCOPE.md" "$TARGET/SCOPE.md"
+
+# .gitignore do plugin
+cat > "$TARGET/.gitignore" <<'EOF'
+# Documento interno de planejamento — não vai no zip publicado.
+/SCOPE.md
+.DS_Store
+EOF
+
+# README stub
+cat > "$TARGET/README.md" <<EOF
+# $NAME ($COMPONENT)
+
+Plugin Moodle. Planejamento em \`SCOPE.md\` (não versionado).
+EOF
+
+# Repositório git próprio do plugin
+git -C "$TARGET" init -q
+git -C "$TARGET" add -A
+git -C "$TARGET" commit -q -m "esqueleto inicial de $COMPONENT" || true
+
+# Moodle precisa ver o novo plugin (roda o upgrade e limpa caches)
+php "$PUBLIC/admin/cli/upgrade.php" --non-interactive >/dev/null 2>&1 || true
+php "$PUBLIC/admin/cli/purge_caches.php" >/dev/null 2>&1 || true
+
+case "$TYPE" in
+    local|block) ENTRYHINT="" ;;
+    mod)    ENTRYHINT="  Ainda faltam (use um mod_* do core como referência): lib.php, mod_form.php, view.php, db/install.xml" ;;
+    filter) ENTRYHINT="  Ainda faltam (use um filter_* do core como referência): classes/text_filter.php" ;;
+    report) ENTRYHINT="  Ainda faltam (use um report_* do core como referência): index.php, lib.php (callbacks de navegação)" ;;
+    *)      ENTRYHINT="  Confira os arquivos de entrada exigidos por plugins do tipo '$TYPE'." ;;
+esac
+
+cat <<EOF
+
+Criado: $TARGET
+Frankenstyle: $COMPONENT
+${ENTRYHINT:+
+$ENTRYHINT
+}
+Próximos passos:
+  1. Abra $DIR/$NAME/SCOPE.md e preencha o planejamento (primeiro trabalho).
+  2. Só depois comece a codar. O Copilot já conhece as regras (.github/).
+  3. Antes de cada commit, o hook roda o PHPCS automaticamente.
+  4. Verifique PHPDoc:   moodle-check $DIR/$NAME/version.php
+  5. Rode os testes:     moodle-phpunit $DIR/$NAME
+EOF

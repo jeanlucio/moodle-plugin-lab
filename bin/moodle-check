@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Roda o local_moodlecheck (o mesmo verificador de PHPDoc que o CI usa) nos arquivos
+# passados. Pega o que o PHPCS deixa passar: "incomplete parameters list", @param fora
+# de sincronia com a assinatura, etc.
+#
+#   moodle-check <arquivo.php> [arquivo.php ...]
+#
+# Passe um caminho por vez (o checker processa só o último se receber vários -p) — este
+# wrapper já faz o laço correto.
+set -euo pipefail
+
+MOODLE_ROOT="$(cd "$(dirname "$0")/../moodle" && pwd)"
+PUBLIC="$MOODLE_ROOT/public"
+CHECKER="$PUBLIC/local/moodlecheck/cli/moodlecheck.php"
+
+if [ $# -eq 0 ]; then
+    echo "uso: moodle-check <arquivo.php> [arquivo.php ...]" >&2
+    exit 2
+fi
+if [ ! -f "$CHECKER" ]; then
+    echo "erro: local_moodlecheck não encontrado em $CHECKER" >&2
+    exit 1
+fi
+
+status=0
+for f in "$@"; do
+    abs="$(cd "$(dirname "$f")" && pwd)/$(basename "$f")"
+    rel="${abs#"$PUBLIC"/}"
+    if [ "$rel" = "$abs" ]; then
+        echo "aviso: $f está fora da árvore do Moodle — pulando." >&2
+        continue
+    fi
+    echo "── $rel"
+    out="$(php "$CHECKER" -p="$rel" 2>&1)"
+    echo "$out"
+    echo "$out" | grep -q '<error ' && status=1
+done
+
+exit $status

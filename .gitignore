@@ -1,2 +1,14 @@
-moodledata/
-mymoodle/
+# Moodle e dados do site — clonados/gerados no setup, nunca versionados aqui.
+/moodle/
+/moodledata/
+/phpunitdata/
+
+# Ferramentas de bancada clonadas no setup (moodle-dev-tools).
+/tools/
+
+# Config local do ambiente (nome do autor, sentinelas de primeiro boot).
+/.config/
+
+# Ruído de editor / SO.
+.DS_Store
+*.swp

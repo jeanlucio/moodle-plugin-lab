@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Mede a cobertura de testes de UM plugin (nativo, com Xdebug em modo coverage).
+# Ferramenta de bancada: não altera o código e não roda no CI.
+#
+#   moodle-coverage <tipo/nome> [--html]
+#
+#   moodle-coverage local/gradeboard
+#   moodle-coverage blocks/gradeboard --html   -> ~/coverage/<plugin>/index.html
+set -euo pipefail
+
+MOODLE_ROOT="$(cd "$(dirname "$0")/../moodle" && pwd)"
+PUBLIC="$MOODLE_ROOT/public"
+PHPUNIT="$MOODLE_ROOT/vendor/bin/phpunit"
+
+PLUGIN="${1:?uso: moodle-coverage <tipo/nome> [--html]}"
+HTML="${2:-}"
+
+PLUGIN_DIR="$PUBLIC/${PLUGIN#/}"
+[ -d "$PLUGIN_DIR/tests" ] || { echo "erro: sem tests/ em $PLUGIN_DIR" >&2; exit 1; }
+
+FRANK="$(basename "$PLUGIN")"
+cd "$PUBLIC"
+
+ARGS=(--bootstrap "$PUBLIC/lib/phpunit/bootstrap.php"
+      --coverage-filter "$PLUGIN_DIR/classes"
+      --coverage-filter "$PLUGIN_DIR")
+
+if [ "$HTML" = "--html" ]; then
+    OUT="$HOME/coverage/$FRANK"
+    mkdir -p "$OUT"
+    ARGS+=(--coverage-html "$OUT")
+    echo "relatório HTML: $OUT/index.html"
+else
+    ARGS+=(--coverage-text)
+fi
+
+exec env XDEBUG_MODE=coverage php -d memory_limit=-1 "$PHPUNIT" \
+    "${ARGS[@]}" "$PLUGIN_DIR/tests"

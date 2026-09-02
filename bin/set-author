@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Define o nome que vai nos cabeçalhos @copyright dos arquivos criados por plugin-new.
+set -euo pipefail
+
+CFG_DIR="$HOME/.config/moodle-plugin-lab"
+mkdir -p "$CFG_DIR"
+
+if [ $# -eq 0 ]; then
+    echo "Autor atual: $(cat "$CFG_DIR/author" 2>/dev/null || echo '(não definido)')"
+    echo "Uso: set-author \"Nome Completo\""
+    exit 0
+fi
+
+printf '%s\n' "$*" > "$CFG_DIR/author"
+touch "$CFG_DIR/.author-confirmed"
+echo "Autor definido: $*"

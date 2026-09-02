@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Aplica upgrades pendentes do banco e limpa os caches do Moodle.
+# Rode sempre que bumpar version.php, mexer em db/ ou adicionar callbacks em lib.php.
+set -euo pipefail
+
+PUBLIC="$(cd "$(dirname "$0")/../moodle/public" && pwd)"
+php "$PUBLIC/admin/cli/upgrade.php" --non-interactive
+php "$PUBLIC/admin/cli/purge_caches.php"
+echo "upgrade + purge concluídos."

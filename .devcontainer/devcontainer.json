@@ -1,31 +1,57 @@
-/*
- * @copyright 2026 Jean Lúcio <jeanlucio@gmail.com>
- */
+// Ambiente de desenvolvimento de plugins Moodle para o Codespace do aluno.
+// Documentação do fluxo: docs/GUIA-DO-ALUNO.md
 {
-  // Define o "nome de batismo" do ambiente, que aparece no canto do VS Code.
-  "name": "Moodle 5.2 Vibe Coding",
-  
-  // Diz ao Codespaces para usar o arquivo "Dockerfile" ao invés de uma máquina padrão.
-  // É através dele que o servidor nasce com PHP, MariaDB e as extensões instaladas.
+  "name": "Moodle Plugin Lab (Moodle 5.2)",
   "build": {
     "dockerfile": "Dockerfile"
   },
-  
-  // Automatiza a instalação de ferramentas no VS Code do aluno.
+
+  // Node é exigido pelo Grunt do Moodle (build de AMD, eslint, stylelint).
+  // GitHub CLI já vem autenticado no Codespace — usado para detectar o nome do autor.
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "forwardPorts": [8000, 3306],
+  "portsAttributes": {
+    "8000": { "label": "Moodle", "onAutoForward": "openBrowser" },
+    "3306": { "label": "MariaDB", "onAutoForward": "silent" }
+  },
+
+  // onCreate roda uma vez, no prebuild: clona o Moodle, instala o site, clona as ferramentas.
+  "onCreateCommand": "bash .devcontainer/setup.sh",
+  // postCreate roda quando o Codespace do aluno nasce: detecta o nome dele para os cabeçalhos.
+  "postCreateCommand": "bash .devcontainer/seed-author.sh",
+  // postStart roda em todo boot: sobe MariaDB e o servidor PHP.
+  "postStartCommand": "bash .devcontainer/start.sh",
+
+  "remoteEnv": {
+    "PATH": "${containerWorkspaceFolder}/bin:${containerEnv:HOME}/.local/bin:${containerEnv:PATH}",
+    "MOODLE_WWWROOT_FALLBACK": "http://localhost:8000",
+    // Revisão por IA no pre-commit desligada por padrão (o aluno usa o Copilot Chat).
+    // Para ligar: preencher ~/.phpcs-ai.env e exportar SKIP_AI=0 no terminal.
+    "SKIP_AI": "1"
+  },
+
   "customizations": {
     "vscode": {
-      // Lista de extensões que já vêm instaladas de fábrica na máquina:
       "extensions": [
-        "github.copilot",                      // IA para autocompletar código
-        "github.copilot-chat",                 // IA para tirar dúvidas de programação no chat
-        "bmewburn.vscode-intelephense-client"  // O melhor corretor e assistente para a linguagem PHP
-      ]
+        "github.copilot",
+        "github.copilot-chat",
+        "bmewburn.vscode-intelephense-client"
+      ],
+      "settings": {
+        "files.eol": "\n",
+        "files.insertFinalNewline": true,
+        "files.trimTrailingWhitespace": true,
+        "editor.rulers": [132],
+        "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+        "intelephense.environment.includePaths": [
+          "moodle/lib",
+          "moodle/public/lib"
+        ]
+      }
     }
-  },
-  
-  // Liga o banco de dados MariaDB automaticamente assim que o VS Code abrir.
-  "postStartCommand": "sudo service mariadb start",
-  
-  // Libera as portas que usaremos para acessar o site (8000) e o banco de dados (3306).
-  "forwardPorts": [8000, 3306]
+  }
 }
