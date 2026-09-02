@@ -36,6 +36,11 @@ RUN { \
         echo "max_execution_time = 300"; \
     } > /usr/local/etc/php/conf.d/moodle.ini
 
+# Xdebug desligado por padrão (a imagem base o deixa em "debug", que tenta um
+# debugger inexistente e polui toda saída). O moodle-coverage religa via
+# XDEBUG_MODE=coverage quando precisa. zzz- garante que sobrescreve o ini do Xdebug.
+RUN echo "xdebug.mode=off" > /usr/local/etc/php/conf.d/zzz-xdebug-off.ini
+
 # ---------------------------------------------------------------------------
 # PHP_CodeSniffer + padrão de código do Moodle (moodlehq/moodle-cs), num
 # diretório Composer isolado do sistema. O binário fica em /usr/local/bin/phpcs
