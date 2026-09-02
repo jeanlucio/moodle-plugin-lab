@@ -14,7 +14,7 @@ Você não instala nada: o Codespace já sobe com o Moodle 5.2 rodando.
 
 Você **não** faz fork nem cópia deste repositório. Ele é a bancada compartilhada: você abre
 um Codespace a partir dele (a máquina nasce **na sua conta**, com o **seu** Copilot) e o
-código que você desenvolve vai para **repositórios seus** (passo 5).
+código que você desenvolve vai para **repositórios seus** (seção 6).
 
 ## 1. Abrir o ambiente
 
@@ -33,7 +33,17 @@ código que você desenvolve vai para **repositórios seus** (passo 5).
 
 ---
 
-## 2. Primeiro trabalho: o SCOPE
+## 2. Aquecimento: o bloco "Saudação"
+
+Antes do seu plugin de verdade, faça o **exercício 1** para sentir o fluxo inteiro
+(criar → commitar → verificar → rodar no Moodle → publicar → CI). Leva ~15 min e o SCOPE já
+vem pronto:
+
+**→ [docs/exemplo/PASSOS.md](exemplo/PASSOS.md)**
+
+---
+
+## 3. Trabalho principal: o SCOPE do seu plugin
 
 Antes de escrever qualquer código, todo plugin começa pelo **planejamento**. Crie o
 esqueleto do seu plugin:
@@ -45,9 +55,9 @@ plugin-new local meuplugino
 (`local` é o tipo; `meuplugino` é o nome curto, minúsculo, só letras.)
 
 Isso cria a pasta `moodle/public/local/meuplugino/` já com um repositório git próprio e o
-arquivo **`SCOPE.md`** copiado de `docs/TEMPLATE_SCOPE.md`. **Preencher esse `SCOPE.md` é o
-primeiro trabalho.** Use o Copilot Chat para ajudar a pensar cada seção — ele já conhece as
-regras do laboratório.
+arquivo **`SCOPE.md`** copiado de `docs/TEMPLATE_SCOPE.md`. **Preenchê-lo é o trabalho
+principal.** Use o Copilot Chat para ajudar a pensar cada seção — ele já conhece as regras
+do laboratório.
 
 > O `SCOPE.md` é **versionado junto com o plugin** (o professor corrige pelo seu
 > repositório), mas fica **fora do zip publicado** no Plugin Directory — o `plugin-new` já
@@ -55,7 +65,7 @@ regras do laboratório.
 
 ---
 
-## 3. Desenvolver
+## 4. Desenvolver
 
 - Trabalhe **na janela padrão do Codespace** (raiz `moodle-plugin-lab`) — não abra a pasta
   do plugin como janela separada. Só na raiz o Copilot enxerga toda a documentação e as
@@ -87,7 +97,7 @@ regras do laboratório.
 
 ---
 
-## 4. Verificar antes de entregar
+## 5. Verificar antes de entregar
 
 | O quê | Comando |
 |---|---|
@@ -103,7 +113,7 @@ burlar. `phpcbf local/meuplugino/arquivo.php` conserta boa parte do estilo sozin
 
 ---
 
-## 5. Versionar o seu plugin
+## 6. Versionar o seu plugin
 
 A pasta do plugin é um repositório git **separado** do laboratório. Commite normalmente
 lá dentro:
@@ -130,7 +140,7 @@ plugin-publish
 
 ---
 
-## 6. Problemas comuns
+## 7. Problemas comuns
 
 | Sintoma | O que fazer |
 |---|---|
@@ -140,10 +150,10 @@ plugin-publish
 | Moodle não vê um plugin/mudança nova | `plugin-upgrade` |
 | Commit bloqueado pelo hook | Corrija o que o PHPCS apontou (`phpcbf <arquivo>` conserta boa parte). Não burle. |
 | Copilot não segue as regras | Troque o modelo para **Claude Sonnet** ou **GPT-4.1** no seletor do Copilot Chat. |
-| **"You don't have push permissions"** no repo do laboratório | **Esperado.** Você só lê este repo. Seu código vai para repositórios **seus** (passo 5). Nunca precisa commitar no `moodle-plugin-lab`. |
+| **"You don't have push permissions"** no repo do laboratório | **Esperado.** Você só lê este repo. Seu código vai para repositórios **seus** (seção 6). Nunca precisa commitar no `moodle-plugin-lab`. |
 | Nome estranho no Codespace ("miniature robot", etc.) | O GitHub gera um nome aleatório por Codespace. Inofensivo. Renomeie em github.com/codespaces → ⋯ → Rename, se quiser. |
 
-## 7. Referência
+## 8. Referência
 
 - `docs/REGRAS-DE-CODIGO.md` — regras de código completas e comentadas.
 - `docs/AMBIENTE.md` — como o ambiente funciona por dentro (banco, servidor, caches).
