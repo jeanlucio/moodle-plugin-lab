@@ -5,8 +5,8 @@ Referência de infraestrutura do Moodle Plugin Lab — como o Codespace está mo
 
 ## Topologia
 
-Tudo roda **num único container** (o Codespace). Não há Docker aninhado, não há
-`docker exec`. O PHP roda nativo.
+Tudo roda **nativo no próprio Codespace** — PHP, MariaDB e o servidor web. Não use
+`docker` nem `docker exec` (as ferramentas de bancada rodam PHP direto).
 
 ```
 /workspaces/moodle-plugin-lab/
