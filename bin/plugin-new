@@ -11,7 +11,8 @@
 set -euo pipefail
 
 LAB_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-PUBLIC="$LAB_ROOT/moodle/public"
+MOODLE_ROOT="$LAB_ROOT/moodle"
+PUBLIC="$MOODLE_ROOT/public"
 AUTHOR="$(cat "$HOME/.config/moodle-plugin-lab/author" 2>/dev/null || echo 'Seu Nome')"
 YEAR="$(date +%Y)"
 
@@ -264,8 +265,8 @@ git -C "$TARGET" add -A
 git -C "$TARGET" commit -q -m "esqueleto inicial de $COMPONENT" || true
 
 # Moodle precisa ver o novo plugin (roda o upgrade e limpa caches)
-php "$PUBLIC/admin/cli/upgrade.php" --non-interactive >/dev/null 2>&1 || true
-php "$PUBLIC/admin/cli/purge_caches.php" >/dev/null 2>&1 || true
+php "$MOODLE_ROOT/admin/cli/upgrade.php" --non-interactive >/dev/null 2>&1 || true
+php "$MOODLE_ROOT/admin/cli/purge_caches.php" >/dev/null 2>&1 || true
 
 case "$TYPE" in
     local|block) ENTRYHINT="" ;;

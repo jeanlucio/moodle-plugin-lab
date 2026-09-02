@@ -9,7 +9,7 @@
   // Node é exigido pelo Grunt do Moodle (build de AMD, eslint, stylelint).
   // GitHub CLI já vem autenticado no Codespace — usado para detectar o nome do autor.
   "features": {
-    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
 
