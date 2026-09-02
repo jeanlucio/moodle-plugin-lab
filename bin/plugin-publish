@@ -5,15 +5,18 @@
 #   plugin-publish <tipo/nome>                    # de qualquer lugar
 #   plugin-publish <tipo/nome> --repo <nome>      # nome de repositório customizado
 #   plugin-publish <tipo/nome> --team joao,maria  # adiciona colegas como colaboradores
+#   plugin-publish <tipo/nome> --private          # repo privado (padrão é público)
 #
 # Nome de repo padrão: moodle-<frankenstyle> (convenção da comunidade Moodle).
+# O repo é PÚBLICO por padrão: é trabalho de estudante feito para ser avaliado, e o
+# mod_codereview (avaliação via GitHub) só lê repositórios públicos.
 # Contorna o token limitado do Codespace, que não pode criar repositórios.
 set -euo pipefail
 
 LAB_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PUBLIC="$LAB_ROOT/moodle/public"
 
-PLUGIN_DIR=""; REPO=""; TEAM=""
+PLUGIN_DIR=""; REPO=""; TEAM=""; VIS="--public"
 if [ $# -ge 1 ] && [ -d "$PUBLIC/${1#/}" ]; then
     PLUGIN_DIR="$PUBLIC/${1#/}"; shift
 elif [ -f version.php ]; then
@@ -23,10 +26,12 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --repo) REPO="${2:?}"; shift 2 ;;
         --team) TEAM="${2:?}"; shift 2 ;;
+        --private) VIS="--private"; shift ;;
+        --public) VIS="--public"; shift ;;
         *) echo "opção desconhecida: $1" >&2; exit 2 ;;
     esac
 done
-[ -n "$PLUGIN_DIR" ] || { echo "uso: plugin-publish <tipo/nome> [--repo <nome>] [--team a,b]" >&2; exit 2; }
+[ -n "$PLUGIN_DIR" ] || { echo "uso: plugin-publish <tipo/nome> [--repo <nome>] [--team a,b] [--private]" >&2; exit 2; }
 [ -f "$PLUGIN_DIR/version.php" ] || { echo "erro: $PLUGIN_DIR não é um plugin (sem version.php)." >&2; exit 1; }
 [ -d "$PLUGIN_DIR/.git" ]        || { echo "erro: $PLUGIN_DIR não é um repositório git." >&2; exit 1; }
 
@@ -56,7 +61,7 @@ gh auth setup-git >/dev/null 2>&1 || true
 
 WHO="$(gh api user --jq .login)"
 echo "Criando $WHO/$REPO a partir de $PLUGIN_DIR ..."
-gh repo create "$REPO" --private --source="$PLUGIN_DIR" --remote=origin --push
+gh repo create "$REPO" "$VIS" --source="$PLUGIN_DIR" --remote=origin --push
 
 if [ -n "$TEAM" ]; then
     IFS=',' read -ra USERS <<< "$TEAM"

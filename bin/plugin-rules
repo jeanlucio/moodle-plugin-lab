@@ -28,19 +28,20 @@ for f in "$SRC"/instructions/*.instructions.md; do
     cp "$f" "$TARGET/.github/instructions/"
 done
 
-# .gitattributes — mantém o .github/ e o SCOPE.md fora do zip publicado.
+# .gitattributes — mantém .github/ fora do zip publicado. O SCOPE.md fica DENTRO do
+# repo E do zip: o mod_codereview lê o zipball para a revisão de IA, e o zipball do
+# GitHub respeita export-ignore. Quem for publicar no Directory adiciona
+# "/SCOPE.md export-ignore" na hora (ver docs/GUIA-DO-ALUNO.md).
 if ! grep -q 'export-ignore' "$TARGET/.gitattributes" 2>/dev/null; then
     cat >> "$TARGET/.gitattributes" <<'EOF'
 /.github/       export-ignore
-/SCOPE.md       export-ignore
 /.gitattributes export-ignore
 EOF
 fi
 
-# Plugin antigo que gitignorava o SCOPE: libera para versionar (o professor corrige pelo repo).
-if [ -f "$TARGET/.gitignore" ]; then
-    sed -i '\#^/\?SCOPE\.md$#d' "$TARGET/.gitignore"
-fi
+# Plugin antigo: libera o SCOPE para versionar e tira do export-ignore.
+[ -f "$TARGET/.gitignore" ] && sed -i '\#^/\?SCOPE\.md$#d' "$TARGET/.gitignore"
+[ -f "$TARGET/.gitattributes" ] && sed -i '\#^/\?SCOPE\.md .*export-ignore#d' "$TARGET/.gitattributes"
 
 echo "Regras + .gitattributes atualizados em $TARGET/.github/"
 ls "$TARGET/.github/instructions/"

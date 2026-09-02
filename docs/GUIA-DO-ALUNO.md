@@ -59,9 +59,13 @@ arquivo **`SCOPE.md`** copiado de `docs/TEMPLATE_SCOPE.md`. **Preenchê-lo é o 
 principal.** Use o Copilot Chat para ajudar a pensar cada seção — ele já conhece as regras
 do laboratório.
 
-> O `SCOPE.md` é **versionado junto com o plugin** (o professor corrige pelo seu
-> repositório), mas fica **fora do zip publicado** no Plugin Directory — o `plugin-new` já
-> configura isso no `.gitattributes`. Commite ele normalmente.
+> O `SCOPE.md` é **versionado junto com o plugin** — o professor corrige pelo seu
+> repositório, e a revisão por IA compara o que você implementou com o que planejou.
+> Commite ele normalmente.
+>
+> **Só se você for publicar o plugin no Moodle Plugins Directory:** aí sim ele é
+> planejamento interno e não deve ir no pacote — adicione `/SCOPE.md export-ignore` ao
+> `.gitattributes` do plugin nesse momento.
 
 ---
 
@@ -123,11 +127,14 @@ cd moodle/public/local/meuplugino
 git add -A && git commit -m "..."
 ```
 
-Para publicar no seu GitHub (cria o repositório `moodle-<frankenstyle>`):
+Para publicar no seu GitHub (cria o repositório **público** `moodle-<frankenstyle>`):
 
 ```
 plugin-publish
 ```
+
+> O repo é **público** — é trabalho para ser avaliado, e a atividade de avaliação
+> (`mod_codereview`) só lê repositórios públicos. Para privado: `plugin-publish --private`.
 
 > Na **primeira vez neste Codespace**, `plugin-publish` pede `gh auth login` (GitHub.com →
 > HTTPS → Login with a web browser). Feito isso **uma vez**, vale para todos os seus plugins
