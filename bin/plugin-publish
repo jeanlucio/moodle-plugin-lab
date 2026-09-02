@@ -42,9 +42,10 @@ REPO="${1:-moodle-${COMPONENT:-$(basename "$PLUGIN_DIR")}}"
 # O token automático do Codespace não cria repositórios — usa a credencial pessoal.
 unset GITHUB_TOKEN GH_TOKEN
 if ! gh auth status >/dev/null 2>&1; then
-    echo "Autentique sua conta GitHub (só desta vez):"
+    echo "Autentique sua conta GitHub (só desta vez neste Codespace):"
     gh auth login
 fi
+gh auth setup-git >/dev/null 2>&1 || true
 
 WHO="$(gh api user --jq .login)"
 echo "Criando $WHO/$REPO a partir de $PLUGIN_DIR ..."

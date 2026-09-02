@@ -56,6 +56,9 @@ if ! grep -qF "$MARKER" "$HOME/.bashrc" 2>/dev/null; then
     cat >> "$HOME/.bashrc" <<EOF
 
 $MARKER
+# O GITHUB_TOKEN automático do Codespace só dá acesso ao repo de origem. Removendo-o,
+# git e gh passam a usar a credencial completa do 'gh auth login' (repos do aluno).
+unset GITHUB_TOKEN GH_TOKEN
 if [ -t 1 ] && [ ! -f "\$HOME/.config/moodle-plugin-lab/.author-confirmed" ]; then
     bash "$WORKSPACE/.devcontainer/first-run.sh" || true
 fi
