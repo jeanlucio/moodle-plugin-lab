@@ -45,12 +45,7 @@ if [ -f "$MOODLE_DIR/config.php" ]; then
     fi
 fi
 
-# Servidor web embutido do PHP (suportado oficialmente pelo Moodle para dev).
-# PHP_CLI_SERVER_WORKERS=4 permite requisições concorrentes (o AJAX de uma página).
-if ! pgrep -f "php -S 0.0.0.0:8000" >/dev/null 2>&1; then
-    PHP_CLI_SERVER_WORKERS=4 nohup php -S 0.0.0.0:8000 -t "$MOODLE_DIR/public" \
-        >"$WORKSPACE/moodledata/phpserver.log" 2>&1 &
-    disown || true
-fi
+# Servidor web embutido do PHP — via serve.sh (setsid, sobrevive ao lifecycle command).
+bash "$WORKSPACE/.devcontainer/serve.sh"
 
 echo "Moodle no ar: porta 8000  ·  admin / Sandbox123!"

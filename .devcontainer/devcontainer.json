@@ -28,9 +28,9 @@
   "postCreateCommand": "bash .devcontainer/seed-author.sh",
   // postStart roda em todo boot: sobe MariaDB e o servidor PHP.
   "postStartCommand": "bash .devcontainer/start.sh",
-  // postAttach roda a cada conexão: torna a porta 8000 pública de verdade (o campo
-  // visibility do portsAttributes não funciona no Codespaces).
-  "postAttachCommand": "gh codespace ports visibility 8000:public -c \"$CODESPACE_NAME\" 2>/dev/null || true",
+  // postAttach roda a cada conexão: torna a porta 8000 pública (o campo visibility do
+  // portsAttributes não funciona no Codespaces) e garante o servidor de pé.
+  "postAttachCommand": "gh codespace ports visibility 8000:public -c \"$CODESPACE_NAME\" 2>/dev/null; bash .devcontainer/serve.sh || true",
 
   "remoteEnv": {
     "PATH": "${containerWorkspaceFolder}/bin:${containerEnv:HOME}/.local/bin:${containerEnv:PATH}",
