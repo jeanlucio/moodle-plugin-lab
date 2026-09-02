@@ -42,6 +42,7 @@
         "bmewburn.vscode-intelephense-client"
       ],
       "settings": {
+        "workbench.colorTheme": "Default Dark Modern",
         "files.eol": "\n",
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true,
