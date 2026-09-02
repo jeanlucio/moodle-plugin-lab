@@ -15,8 +15,9 @@
 
   "forwardPorts": [8000, 3306],
   "portsAttributes": {
-    // Público evita o HTTP 401 do proxy do Codespaces em porta privada (o site
-    // só existe com o Codespace aberto e ainda exige login do Moodle).
+    // O visibility aqui não é confiável no Codespaces (bug conhecido); o postAttachCommand
+    // abaixo força "public" via gh. Público evita o HTTP 401 do proxy em porta privada
+    // (o site só existe com o Codespace aberto e ainda exige login do Moodle).
     "8000": { "label": "Moodle", "onAutoForward": "openBrowser", "visibility": "public" },
     "3306": { "label": "MariaDB", "onAutoForward": "silent" }
   },
@@ -27,6 +28,9 @@
   "postCreateCommand": "bash .devcontainer/seed-author.sh",
   // postStart roda em todo boot: sobe MariaDB e o servidor PHP.
   "postStartCommand": "bash .devcontainer/start.sh",
+  // postAttach roda a cada conexão: torna a porta 8000 pública de verdade (o campo
+  // visibility do portsAttributes não funciona no Codespaces).
+  "postAttachCommand": "gh codespace ports visibility 8000:public -c \"$CODESPACE_NAME\" 2>/dev/null || true",
 
   "remoteEnv": {
     "PATH": "${containerWorkspaceFolder}/bin:${containerEnv:HOME}/.local/bin:${containerEnv:PATH}",
