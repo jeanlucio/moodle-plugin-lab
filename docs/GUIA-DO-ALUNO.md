@@ -54,12 +54,21 @@ regras do laboratório.
 ## 3. Desenvolver
 
 - Escreva o código dentro da pasta do seu plugin.
-- O **Copilot Chat** segue automaticamente as regras em `.github/copilot-instructions.md`.
-  Selecione o modelo **Claude Sonnet** no seletor do Copilot se quiser.
+- O **Copilot Chat** segue automaticamente as regras que o `plugin-new` copiou pra dentro do
+  seu plugin (`.github/copilot-instructions.md` + `.github/instructions/`). Selecione o
+  modelo **Claude Sonnet** ou **GPT-4.1** no seletor do Copilot.
 - Sempre que o Moodle "não ver" uma mudança (novo arquivo de função, `db/`, `version.php`):
 
   ```
   plugin-upgrade
+  ```
+
+- Se o professor atualizar as regras do laboratório, sincronize no seu plugin:
+
+  ```
+  cd /workspaces/moodle-plugin-lab && git pull
+  cd moodle/public/<tipo>/<seu-plugin>
+  plugin-rules
   ```
 
 - Compilar JavaScript AMD (depois de editar `amd/src/*.js`), de dentro da pasta do plugin:
