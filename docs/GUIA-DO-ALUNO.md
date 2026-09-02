@@ -113,6 +113,8 @@ gh repo create meuplugino --private --source=. --push
 | Moodle não vê um plugin/mudança nova | `plugin-upgrade` |
 | Commit bloqueado pelo hook | Corrija o que o PHPCS apontou (`phpcbf <arquivo>` conserta boa parte). Não burle. |
 | Copilot não segue as regras | Troque o modelo para **Claude Sonnet** ou **GPT-4.1** no seletor do Copilot Chat. |
+| **"You don't have push permissions"** no repo do laboratório | **Esperado.** Você só lê este repo. Seu código vai para repositórios **seus** (passo 5). Nunca precisa commitar no `moodle-plugin-lab`. |
+| Nome estranho no Codespace ("miniature robot", etc.) | O GitHub gera um nome aleatório por Codespace. Inofensivo. Renomeie em github.com/codespaces → ⋯ → Rename, se quiser. |
 
 ## 7. Referência
 
