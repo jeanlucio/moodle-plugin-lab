@@ -5,6 +5,15 @@
 > Liste `SCOPE.md` no `.gitignore` do plugin (o `plugin-new` já faz isso).
 
 > [!NOTE]
+> **Regras de código (para você e para a IA):**
+> - `.github/copilot-instructions.md` (na raiz deste plugin) — regras essenciais que o
+>   Copilot carrega em todo prompt.
+> - `.github/instructions/*.instructions.md` — regras profundas por área (banco, backup,
+>   privacidade, front-end, atividade, i18n, testes), carregadas automaticamente quando você
+>   edita o arquivo correspondente.
+> - `docs/REGRAS-DE-CODIGO.md` **do laboratório** — a referência completa e comentada.
+
+> [!NOTE]
 > **Frankenstyle** (`type_name`): curto, em **inglês**, minúsculo, de preferência um único
 > token, **verificado livre no Moodle Plugins Directory** antes de fixar (página 404 +
 > `download.moodle.org/api/1.3/pluginfo.php?plugin=type_name` retorna "não encontrado").
