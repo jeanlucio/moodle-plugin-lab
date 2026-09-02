@@ -1,10 +1,14 @@
 # Regras de desenvolvimento de plugins Moodle
 
-Instruções para a IA (Copilot Chat) neste repositório. Ao gerar, alterar ou revisar
-código PHP, JS, CSS, Mustache ou SQL de um plugin Moodle, siga estas regras. A
-referência completa e comentada está em `docs/REGRAS-DE-CODIGO.md`.
+Instruções para a IA (Copilot Chat). Ao gerar, alterar ou revisar código PHP, JS, CSS,
+Mustache ou SQL de um plugin Moodle, siga estas regras.
 
 > **Idioma:** responda ao aluno em **português do Brasil**. Comentários no código: **inglês**.
+>
+> **Regras aprofundadas por área** estão em `.github/instructions/*.instructions.md`
+> (carregam sozinhas ao editar o arquivo correspondente). A referência completa e comentada
+> vive em `docs/REGRAS-DE-CODIGO.md` no repositório do laboratório **Moodle Plugin Lab** —
+> não é um arquivo deste plugin.
 
 ## Estrutura de arquivo PHP
 
