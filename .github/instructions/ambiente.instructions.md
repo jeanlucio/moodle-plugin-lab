@@ -21,6 +21,7 @@ Estes comandos existem **só neste Codespace** — não sugerir num contexto for
 |---|---|
 | Criar plugin | `plugin-new <tipo> <nome>` |
 | (Re)sincronizar as regras da IA num plugin | `plugin-rules` (de dentro do plugin) |
+| Publicar o plugin no GitHub do aluno | `plugin-publish` (de dentro do plugin) |
 | Moodle reconhecer mudança (novo `lib.php`, `db/`, bump de `version.php`) | `plugin-upgrade` |
 | Rodar testes de um plugin | `moodle-phpunit <tipo/nome>` |
 | Cobertura | `moodle-coverage <tipo/nome>` |

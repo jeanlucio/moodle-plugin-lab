@@ -102,17 +102,27 @@ burlar. `phpcbf local/meuplugino/arquivo.php` conserta boa parte do estilo sozin
 
 ## 5. Versionar o seu plugin
 
-A pasta do plugin é um repositório git **separado** do laboratório. Publique no seu próprio
-GitHub:
+A pasta do plugin é um repositório git **separado** do laboratório. Commite normalmente
+lá dentro:
 
 ```
 cd moodle/public/local/meuplugino
-gh repo create meuplugino --private --source=. --push
+git add -A && git commit -m "..."
 ```
 
+Para publicar no seu GitHub (cria o repositório `moodle-<frankenstyle>`):
+
+```
+plugin-publish
+```
+
+> `plugin-publish` contorna o token limitado do Codespace — na primeira vez ele pede
+> `gh auth login` (GitHub.com → HTTPS → Login with a web browser). Depois disso, `git push`
+> normal funciona.
+
 > O código do Moodle e os dados do site (`moodle/`, `moodledata/`) **não** são versionados
-> aqui — só o seu plugin. Se você recriar o Codespace, só volta o que você tiver enviado
-> para o seu repositório.
+> aqui — só o seu plugin. Se você **deletar** o Codespace, só volta o que você tiver
+> publicado no seu repositório.
 
 ---
 

@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Publica um plugin num repositório GitHub novo (da conta do aluno).
+#
+#   plugin-publish                       # de dentro da pasta do plugin
+#   plugin-publish <tipo/nome>           # de qualquer lugar
+#   plugin-publish <tipo/nome> <repo>    # nome de repositório customizado
+#
+# Nome de repo padrão: moodle-<frankenstyle> (convenção da comunidade Moodle).
+# Contorna o token limitado do Codespace, que não pode criar repositórios.
+set -euo pipefail
+
+LAB_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PUBLIC="$LAB_ROOT/moodle/public"
+
+if [ $# -ge 1 ] && [ -d "$PUBLIC/${1#/}" ]; then
+    PLUGIN_DIR="$PUBLIC/${1#/}"; shift
+elif [ -f version.php ]; then
+    PLUGIN_DIR="$(pwd)"
+else
+    echo "uso: plugin-publish <tipo/nome> [repo]   (ou rode de dentro do plugin)" >&2
+    exit 2
+fi
+[ -f "$PLUGIN_DIR/version.php" ] || { echo "erro: $PLUGIN_DIR não é um plugin (sem version.php)." >&2; exit 1; }
+[ -d "$PLUGIN_DIR/.git" ]        || { echo "erro: $PLUGIN_DIR não é um repositório git." >&2; exit 1; }
+
+if git -C "$PLUGIN_DIR" remote get-url origin >/dev/null 2>&1; then
+    echo "erro: este plugin já tem um remote 'origin'. Use 'git push'." >&2
+    exit 1
+fi
+if ! git -C "$PLUGIN_DIR" rev-parse HEAD >/dev/null 2>&1; then
+    echo "erro: nenhum commit ainda. Faça 'git add -A && git commit' primeiro." >&2
+    exit 1
+fi
+if ! git -C "$PLUGIN_DIR" diff --quiet || ! git -C "$PLUGIN_DIR" diff --cached --quiet; then
+    echo "erro: há mudanças não commitadas em $PLUGIN_DIR. Commite antes de publicar." >&2
+    exit 1
+fi
+
+COMPONENT="$(grep -oP "component\s*=\s*'\K[^']+" "$PLUGIN_DIR/version.php" 2>/dev/null || true)"
+REPO="${1:-moodle-${COMPONENT:-$(basename "$PLUGIN_DIR")}}"
+
+# O token automático do Codespace não cria repositórios — usa a credencial pessoal.
+unset GITHUB_TOKEN GH_TOKEN
+if ! gh auth status >/dev/null 2>&1; then
+    echo "Autentique sua conta GitHub (só desta vez):"
+    gh auth login
+fi
+
+WHO="$(gh api user --jq .login)"
+echo "Criando $WHO/$REPO a partir de $PLUGIN_DIR ..."
+gh repo create "$REPO" --private --source="$PLUGIN_DIR" --remote=origin --push
+
+echo ""
+echo "Publicado: https://github.com/$WHO/$REPO"
+echo "Daqui em diante, 'git push' normal."
