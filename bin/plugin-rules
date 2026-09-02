@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Copia (ou atualiza) as regras de código para a IA dentro de um plugin:
+# .github/copilot-instructions.md + .github/instructions/*.instructions.md
+# (menos o ambiente.instructions.md, que descreve só o Codespace do lab).
+#
+#   plugin-rules              # dentro da pasta de um plugin (tem version.php)
+#   plugin-rules <tipo/nome>  # de qualquer lugar (ex.: plugin-rules local/demoboard)
+set -euo pipefail
+
+LAB_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SRC="$LAB_ROOT/.github"
+
+if [ $# -ge 1 ]; then
+    TARGET="$LAB_ROOT/moodle/public/${1#/}"
+elif [ -f version.php ]; then
+    TARGET="$(pwd)"
+else
+    echo "uso: plugin-rules <tipo/nome>   (ou rode de dentro da pasta do plugin)" >&2
+    exit 2
+fi
+
+[ -f "$TARGET/version.php" ] || { echo "erro: $TARGET não é um plugin (sem version.php)." >&2; exit 1; }
+
+mkdir -p "$TARGET/.github/instructions"
+cp "$SRC/copilot-instructions.md" "$TARGET/.github/"
+for f in "$SRC"/instructions/*.instructions.md; do
+    [ "$(basename "$f")" = "ambiente.instructions.md" ] && continue
+    cp "$f" "$TARGET/.github/instructions/"
+done
+
+echo "Regras copiadas para $TARGET/.github/"
+ls "$TARGET/.github/instructions/"
