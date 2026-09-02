@@ -26,6 +26,7 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../moodle/config.php');
+require_once($CFG->libdir . '/clilib.php');
 require_once($CFG->libdir . '/adminlib.php');
 
 $lang = $argv[1] ?? 'pt_br';

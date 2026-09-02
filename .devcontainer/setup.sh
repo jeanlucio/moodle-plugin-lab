@@ -41,6 +41,8 @@ if [ ! -d "$MOODLE_DIR/public/local/moodlecheck" ]; then
 fi
 
 echo "==> [5/7] Instalação do site Moodle"
+# install.php cria config.php + schema. Só na primeira vez — num rebuild o
+# config.php sobrevive em /workspaces (o schema não; o start.sh reinstala).
 if [ ! -f "$MOODLE_DIR/config.php" ]; then
     php "$CLI/install.php" \
         --non-interactive --agree-license \
@@ -51,18 +53,13 @@ if [ ! -f "$MOODLE_DIR/config.php" ]; then
         --fullname="Moodle Plugin Lab" --shortname="lab" \
         --adminuser=admin --adminpass="Sandbox123!" \
         --adminemail="admin@example.invalid"
+fi
 
-    # wwwroot dinâmico (o host muda por Codespace) + suporte a proxy TLS do GitHub.
-    bash "$WORKSPACE/.devcontainer/patch-config.sh" "$MOODLE_DIR/config.php"
-
-    # Português do Brasil (best-effort — se a rede do langpack falhar, segue em inglês).
-    php "$WORKSPACE/.devcontainer/moodle-langpack.php" pt_br || \
-        echo "aviso: pt_br não instalado automaticamente; instale em Admin > Idioma."
-    php "$CLI/cfg.php" --name=lang --set=pt_br || true
-
-    # Ambiente PHPUnit (segundo conjunto de tabelas + dataroot próprio).
-    if ! grep -q 'phpunit_prefix' "$MOODLE_DIR/config.php"; then
-        python3 - "$MOODLE_DIR/config.php" "$WORKSPACE" <<'PY'
+# Idempotente — roda em toda (re)criação, inclusive rebuild:
+# wwwroot dinâmico (o host muda por Codespace) + linhas do ambiente PHPUnit.
+bash "$WORKSPACE/.devcontainer/patch-config.sh" "$MOODLE_DIR/config.php"
+if ! grep -q 'phpunit_prefix' "$MOODLE_DIR/config.php"; then
+    python3 - "$MOODLE_DIR/config.php" "$WORKSPACE" <<'PY'
 import sys
 path, ws = sys.argv[1], sys.argv[2]
 src = open(path).read().splitlines(keepends=True)
@@ -74,10 +71,8 @@ for i, line in enumerate(src):
         break
 open(path, 'w').write(''.join(src))
 PY
-        mkdir -p "$WORKSPACE/phpunitdata"
-        php "$MOODLE_DIR/public/admin/tool/phpunit/cli/init.php" || true
-    fi
 fi
+mkdir -p "$WORKSPACE/phpunitdata"
 
 echo "==> [6/7] Dependências de build do Moodle (grunt, eslint, stylelint)"
 if [ ! -d "$MOODLE_DIR/node_modules" ]; then
