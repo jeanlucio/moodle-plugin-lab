@@ -140,7 +140,51 @@ plugin-publish
 
 ---
 
-## 7. Problemas comuns
+## 7. Trabalho em grupo
+
+Cada aluno tem **o seu próprio Codespace** (não dá pra compartilhar um). O que o grupo
+compartilha é **o repositório do plugin**.
+
+1. **Um membro** cria o repo e adiciona os colegas como colaboradores:
+
+   ```
+   cd moodle/public/<tipo>/<plugin>
+   git add -A && git commit -m "..."
+   plugin-publish --team login-do-colega1,login-do-colega2
+   ```
+
+2. **Cada colega**, no Codespace dele, puxa o plugin pro lugar certo:
+
+   ```
+   plugin-clone <dono>/moodle-<plugin> <tipo>/<plugin>
+   ```
+   (aceita o convite de colaborador que chega por e-mail/notificação primeiro)
+
+3. Daí em diante, todo mundo trabalha com `git pull` / `git commit` / `git push` no mesmo
+   repo. Combinem de puxar (`git pull`) antes de começar e empurrar (`git push`) ao terminar,
+   pra evitar conflito.
+
+**Cabeçalho `@copyright`:** o grupo combina **uma** string e cada um roda
+`set-author "Grupo 3 — Turma X"` (ou o nome da instituição). A autoria individual de cada
+trecho fica no **histórico do git** (cada commit tem o autor). Não coloque vários nomes no
+`@copyright`.
+
+---
+
+## 8. Plugins de referência
+
+O laboratório já vem com plugins instalados pra você construir **integrações**:
+
+- **`block_playerhud`**, **`filter_playerhud`**, **`availability_playerhud`** — o ecossistema
+  PlayerHUD (gamificação).
+- **`local_aihub`** — camada BYOK de IA (funciona sem chave, degradando).
+
+O código deles está em `moodle/public/blocks/playerhud/`, etc. — leia como referência de
+API, dependência soft (`class_exists()`), Web Services e Privacy Provider.
+
+---
+
+## 9. Problemas comuns
 
 | Sintoma | O que fazer |
 |---|---|
@@ -153,7 +197,7 @@ plugin-publish
 | **"You don't have push permissions"** no repo do laboratório | **Esperado.** Você só lê este repo. Seu código vai para repositórios **seus** (seção 6). Nunca precisa commitar no `moodle-plugin-lab`. |
 | Nome estranho no Codespace ("miniature robot", etc.) | O GitHub gera um nome aleatório por Codespace. Inofensivo. Renomeie em github.com/codespaces → ⋯ → Rename, se quiser. |
 
-## 8. Referência
+## 10. Referência
 
 - `docs/REGRAS-DE-CODIGO.md` — regras de código completas e comentadas.
 - `docs/AMBIENTE.md` — como o ambiente funciona por dentro (banco, servidor, caches).

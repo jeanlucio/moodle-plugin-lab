@@ -1,0 +1,14 @@
+# Plugins de referência pré-instalados no laboratório. Os estudantes podem construir
+# integrações com eles (dependência soft, Web Services, consumir o local_aihub, etc.).
+#
+# Formato:  <git-url>  <caminho relativo a moodle/public>  [ref opcional]
+#   - sem 'ref': usa a última tag de release (v*); se não houver, o main.
+#   - com 'ref': fixa nesse commit/tag/branch.
+# A ordem importa — dependências primeiro (filter_playerhud e availability_playerhud
+# dependem de block_playerhud).
+# Só repositórios PÚBLICOS (o token do Codespace não clona privados).
+
+https://github.com/jeanlucio/moodle-block_playerhud.git         blocks/playerhud
+https://github.com/jeanlucio/moodle-availability_playerhud.git  availability/condition/playerhud
+https://github.com/jeanlucio/moodle-filter_playerhud.git        filter/playerhud
+https://github.com/jeanlucio/moodle-local_aihub.git             local/aihub

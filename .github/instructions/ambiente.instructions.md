@@ -12,6 +12,9 @@ Complementa a seção "Ambiente" do `copilot-instructions.md`. Referência compl
 - **Scripts CLI do Moodle 5.x ficam na raiz** do checkout (`moodle/admin/cli/`), não sob
   `public/`. O código web fica sob `moodle/public/`. `$CFG->dirroot` = `moodle/public`.
 - **Plugins do aluno:** `moodle/public/<tipo>/<nome>/`, cada um seu próprio repo git.
+- **Plugins de referência já instalados** (para integrações): `block_playerhud`,
+  `filter_playerhud`, `availability_playerhud`, `local_aihub`. Consumir por dependência soft
+  (`class_exists()`), Web Service ou a API do `local_aihub`.
 
 ## Comandos além dos do copilot-instructions
 
@@ -19,6 +22,8 @@ Complementa a seção "Ambiente" do `copilot-instructions.md`. Referência compl
 |---|---|
 | Criar plugin | `plugin-new <tipo> <nome>` |
 | (Re)sincronizar as regras da IA num plugin | `plugin-rules` (de dentro do plugin) |
+| Publicar o plugin no GitHub do aluno | `plugin-publish [--team a,b]` (de dentro do plugin) |
+| Entrar num plugin de grupo já publicado | `plugin-clone <owner/repo> <tipo/nome>` |
 | Cobertura de testes | `moodle-coverage <tipo/nome>` |
 | Análise estática de tipos | `moodle-phpstan <tipo/nome>` |
 | Conferir árvore do SCOPE §6 | `moodle-scope-audit <tipo/nome>` |

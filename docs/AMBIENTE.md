@@ -19,7 +19,9 @@ Tudo roda **nativo no próprio Codespace** — PHP, MariaDB e o servidor web. N�
 │   ├── public/         docroot do servidor web
 │   │   ├── local/<seus plugins>/   cada um seu próprio repositório git
 │   │   ├── blocks/ mod/ filter/ report/ ...
-│   │   └── local/moodlecheck/      verificador de PHPDoc (o mesmo do CI)
+│   │   ├── local/moodlecheck/      verificador de PHPDoc (o mesmo do CI)
+│   │   ├── blocks/playerhud/ filter/playerhud/ availability/condition/playerhud/
+│   │   └── local/aihub/            plugins de referência (ver reference-plugins.txt)
 │   └── node_modules/   dependências do grunt/eslint/stylelint
 ├── moodledata/         dados do site  (NÃO versionado)
 ├── phpunitdata/        dados do ambiente de teste  (NÃO versionado)
@@ -94,7 +96,8 @@ php moodle/public/admin/tool/phpunit/cli/init.php
 |---|---|
 | `plugin-new <tipo> <nome>` | cria o esqueleto de um plugin + SCOPE.md + regras da IA + git init |
 | `plugin-rules [tipo/nome]` | (re)copia `.github/copilot-instructions.md` + `instructions/` para um plugin |
-| `plugin-publish [tipo/nome]` | cria o repo GitHub `moodle-<frankenstyle>` do plugin e faz o 1º push |
+| `plugin-publish [tipo/nome] [--team a,b]` | cria o repo GitHub `moodle-<frankenstyle>`, 1º push, adiciona colaboradores |
+| `plugin-clone <owner/repo> <tipo/nome>` | clona um plugin já publicado pra dentro da árvore (entrar num plugin de grupo) |
 | `plugin-upgrade` | `admin/cli/upgrade.php` + `purge_caches.php` |
 | `set-author "Nome"` | muda o nome dos cabeçalhos `@copyright` |
 | `moodle-check <arquivo.php>` | `local_moodlecheck` (PHPDoc, o mesmo gate do CI) |

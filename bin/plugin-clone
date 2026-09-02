@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Clona um plugin que já existe no GitHub para dentro da árvore do Moodle —
+# para juntar-se ao plugin de um grupo (o dono te adicionou como colaborador).
+#
+#   plugin-clone <owner/repo | url> <tipo/nome>
+#
+#   plugin-clone joao/moodle-block_quiz blocks/quiz
+#   plugin-clone https://github.com/joao/moodle-block_quiz.git blocks/quiz
+set -euo pipefail
+
+LAB_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PUBLIC="$LAB_ROOT/moodle/public"
+
+SRC="${1:?uso: plugin-clone <owner/repo | url> <tipo/nome>}"
+DEST="${2:?uso: plugin-clone <owner/repo | url> <tipo/nome>}"
+
+case "$SRC" in
+    http*|git@*) URL="$SRC" ;;
+    */*)         URL="https://github.com/$SRC.git" ;;
+    *)           echo "erro: use 'owner/repo' ou uma URL completa." >&2; exit 2 ;;
+esac
+
+TARGET="$PUBLIC/${DEST#/}"
+[ -e "$TARGET" ] && { echo "erro: $TARGET já existe." >&2; exit 1; }
+
+# Usa a credencial completa do gh (repos privados de grupo precisam dela).
+unset GITHUB_TOKEN GH_TOKEN
+git clone "$URL" "$TARGET"
+
+[ -f "$TARGET/version.php" ] || \
+    echo "aviso: $TARGET não tem version.php — confira o <tipo/nome>."
+
+php "$LAB_ROOT/moodle/admin/cli/upgrade.php" --non-interactive >/dev/null 2>&1 || true
+php "$LAB_ROOT/moodle/admin/cli/purge_caches.php" >/dev/null 2>&1 || true
+
+echo "Clonado em $TARGET. 'git pull' / 'git push' normais daqui."
