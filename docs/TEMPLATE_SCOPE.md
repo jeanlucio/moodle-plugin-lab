@@ -15,10 +15,9 @@
 > - `docs/REGRAS-DE-CODIGO.md` **do laboratório** — a referência completa e comentada.
 >
 > **Ambiente de desenvolvimento:** este plugin é desenvolvido no Codespace **Moodle Plugin
-> Lab**. A infraestrutura (banco, servidor na porta 8000, `admin`/`Sandbox123!`) e os
-> comandos (`plugin-upgrade`, `moodle-phpunit`, `moodle-check`, `npx grunt amd`, Behat só no
-> CI) estão em `docs/AMBIENTE.md` **do laboratório** — não neste plugin. Fora do Codespace do
-> lab esses comandos não existem.
+> Lab**. Os comandos essenciais estão na seção "Ambiente" do `.github/copilot-instructions.md`
+> (aqui na raiz do plugin); a referência completa em `docs/AMBIENTE.md` **do laboratório**.
+> Fora do Codespace do lab esses comandos não existem.
 
 > [!NOTE]
 > **Frankenstyle** (`type_name`): curto, em **inglês**, minúsculo, de preferência um único

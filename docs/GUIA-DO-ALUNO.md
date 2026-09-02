@@ -57,7 +57,10 @@ regras do laboratório.
 
 ## 3. Desenvolver
 
-- Escreva o código dentro da pasta do seu plugin.
+- Trabalhe **na janela padrão do Codespace** (raiz `moodle-plugin-lab`) — não abra a pasta
+  do plugin como janela separada. Só na raiz o Copilot enxerga toda a documentação e as
+  regras do laboratório.
+- Escreva o código dentro da pasta do seu plugin (`moodle/public/<tipo>/<nome>/`).
 - O **Copilot Chat** segue automaticamente as regras que o `plugin-new` copiou pra dentro do
   seu plugin (`.github/copilot-instructions.md` + `.github/instructions/`). Selecione o
   modelo **Claude Sonnet** ou **GPT-4.1** no seletor do Copilot.

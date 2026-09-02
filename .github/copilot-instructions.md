@@ -120,3 +120,19 @@ Mustache ou SQL de um plugin Moodle, siga estas regras.
 
 - Mensagem: resumo curto (~72 chars), sem prefixo de componente, sem `MDL-xxxx` falso.
 - **Nunca** adicionar linha de co-autoria de IA.
+
+## Ambiente
+
+Este plugin é desenvolvido no Codespace **Moodle Plugin Lab** (PHP, MariaDB e servidor web
+nativos — nunca `docker exec`). Comandos, **válidos só nesse Codespace**:
+
+| Ação | Comando |
+|---|---|
+| Moodle reconhecer nova função / `db/` / bump de `version.php` | `plugin-upgrade` |
+| Rodar os testes do plugin | `moodle-phpunit <tipo/nome>` |
+| Verificar PHPDoc (o mesmo do CI) | `moodle-check <arquivo.php>` |
+| Compilar AMD (de dentro da pasta do plugin) | `npx grunt amd` |
+| Publicar o plugin no GitHub | `plugin-publish` |
+
+- **Behat não roda localmente** — escreva os `.feature`, o CI executa.
+- Detalhes completos: `docs/AMBIENTE.md` no repositório do laboratório.
