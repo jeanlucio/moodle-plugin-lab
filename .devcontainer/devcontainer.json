@@ -15,7 +15,9 @@
 
   "forwardPorts": [8000, 3306],
   "portsAttributes": {
-    "8000": { "label": "Moodle", "onAutoForward": "openBrowser" },
+    // Público evita o HTTP 401 do proxy do Codespaces em porta privada (o site
+    // só existe com o Codespace aberto e ainda exige login do Moodle).
+    "8000": { "label": "Moodle", "onAutoForward": "openBrowser", "visibility": "public" },
     "3306": { "label": "MariaDB", "onAutoForward": "silent" }
   },
 
