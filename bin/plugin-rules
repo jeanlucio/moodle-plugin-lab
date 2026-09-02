@@ -28,5 +28,19 @@ for f in "$SRC"/instructions/*.instructions.md; do
     cp "$f" "$TARGET/.github/instructions/"
 done
 
-echo "Regras copiadas para $TARGET/.github/"
+# .gitattributes — mantém o .github/ e o SCOPE.md fora do zip publicado.
+if ! grep -q 'export-ignore' "$TARGET/.gitattributes" 2>/dev/null; then
+    cat >> "$TARGET/.gitattributes" <<'EOF'
+/.github/       export-ignore
+/SCOPE.md       export-ignore
+/.gitattributes export-ignore
+EOF
+fi
+
+# Plugin antigo que gitignorava o SCOPE: libera para versionar (o professor corrige pelo repo).
+if [ -f "$TARGET/.gitignore" ]; then
+    sed -i '\#^/\?SCOPE\.md$#d' "$TARGET/.gitignore"
+fi
+
+echo "Regras + .gitattributes atualizados em $TARGET/.github/"
 ls "$TARGET/.github/instructions/"

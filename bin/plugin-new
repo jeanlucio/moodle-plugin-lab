@@ -247,20 +247,19 @@ EOF
 bash "$(dirname "$0")/plugin-rules" "$DIR/$NAME" >/dev/null
 
 # SCOPE.md — primeiro trabalho: preencher este documento antes de codar.
+# Fica VERSIONADO (o professor corrige pelo repo), mas fora do zip publicado.
 cp "$LAB_ROOT/docs/TEMPLATE_SCOPE.md" "$TARGET/SCOPE.md"
 
-# .gitignore do plugin
 cat > "$TARGET/.gitignore" <<'EOF'
-# Documento interno de planejamento — não vai no zip publicado.
-/SCOPE.md
 .DS_Store
 EOF
+# .gitattributes (export-ignore de .github/ e SCOPE.md) é criado pelo plugin-rules acima.
 
 # README stub
 cat > "$TARGET/README.md" <<EOF
 # $NAME ($COMPONENT)
 
-Plugin Moodle. Planejamento em \`SCOPE.md\` (não versionado).
+Plugin Moodle. Planejamento interno em \`SCOPE.md\`.
 EOF
 
 # Repositório git próprio do plugin

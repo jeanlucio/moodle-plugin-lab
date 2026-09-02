@@ -49,6 +49,10 @@ arquivo **`SCOPE.md`** copiado de `docs/TEMPLATE_SCOPE.md`. **Preencher esse `SC
 primeiro trabalho.** Use o Copilot Chat para ajudar a pensar cada seção — ele já conhece as
 regras do laboratório.
 
+> O `SCOPE.md` é **versionado junto com o plugin** (o professor corrige pelo seu
+> repositório), mas fica **fora do zip publicado** no Plugin Directory — o `plugin-new` já
+> configura isso no `.gitattributes`. Commite ele normalmente.
+
 ---
 
 ## 3. Desenvolver

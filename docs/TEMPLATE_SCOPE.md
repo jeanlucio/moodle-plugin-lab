@@ -2,7 +2,8 @@
 
 > Copie este arquivo para `SCOPE.md` na raiz do seu plugin e preencha. É um documento
 > **interno** de planejamento (em pt-BR) — não confundir com o `README.md` público.
-> Liste `SCOPE.md` no `.gitignore` do plugin (o `plugin-new` já faz isso).
+> Ele fica **versionado** (o professor corrige pelo repositório) mas **fora do zip
+> publicado** — o `plugin-new` já configura o `.gitattributes` (`export-ignore`) para isso.
 
 > [!NOTE]
 > **Regras de código (para você e para a IA):**
@@ -174,7 +175,8 @@ configurações.]
 ├── version.php                       ❌
 ├── CHANGES.md                        ❌ (vazio até a 1ª tag; cabeçalho `## [vX.Y.Z] — YYYY-MM-DD`)
 ├── README.md                         ❌ (público, bilíngue)
-└── SCOPE.md                          ✅ (este doc — no .gitignore)
+├── .gitattributes                    ❌ (export-ignore de .github/ e SCOPE.md — plugin-new cria)
+└── SCOPE.md                          ✅ (este doc — versionado, mas export-ignore)
 ```
 
 > [!IMPORTANT]
