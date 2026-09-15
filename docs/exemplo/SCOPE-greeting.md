@@ -62,7 +62,9 @@ N/A — exercício.
   - registra `$this->page->requires->js_call_amd('block_greeting/greeting', 'init');`;
   - `$this->content->footer = ''`.
 - `applicable_formats()` retorna `['all' => true]`.
-- Métodos que sobrescrevem `block_base` sem mudar semântica usam `#[\Override]`.
+- Métodos que sobrescrevem `block_base` sem mudar semântica usam `#[\Override]` — **exceto
+  `init()`**: `block_base` não declara esse método, então `#[\Override]` nele fatala
+  (PHP 8.3+ exige um método de verdade pra sobrescrever). Só `get_content()` leva o atributo.
 - `\block_greeting\local\greeting_text` (`classes/local/greeting_text.php`): uma classe com
   um único método estático, `get_message(): string`, que retorna
   `get_string('greeting', 'block_greeting')`. Existe só pra separar "de onde vem a frase" de
