@@ -31,11 +31,13 @@ Abra o **Copilot Chat** (modelo Claude Sonnet ou GPT-4.1). Peça, um de cada vez
 1. *"Ajuste o `version.php` do block_greeting: `requires` para Moodle 5.2, `release` 1.0.0, maturity ALPHA."*
 2. *"Crie `lang/en/block_greeting.php` e `lang/pt_br/block_greeting.php` com as strings da seção 9 do SCOPE.md, em ordem alfabética."*
 3. *"Crie `db/access.php` com as capabilities `block/greeting:addinstance` e `block/greeting:myaddinstance`."*
-4. *"Crie `block_greeting.php` conforme a seção 4 do SCOPE.md."*
-5. *"Crie `templates/content.mustache` conforme a seção 8."*
-6. *"Crie `styles.css` com a regra escopada da seção 8."*
-7. *"Crie `classes/privacy/provider.php` com o `null_provider`."*
-8. *"Crie `tests/greeting_test.php` conforme a seção 14."*
+4. *"Crie `classes/local/greeting_text.php` conforme a seção 4 do SCOPE.md."*
+5. *"Crie `block_greeting.php` conforme a seção 4 do SCOPE.md — chamando `greeting_text::get_message()` e registrando o módulo AMD."*
+6. *"Crie `templates/content.mustache` conforme a seção 8."*
+7. *"Crie `styles.css` com a regra escopada da seção 8."*
+8. *"Crie `amd/src/greeting.js` conforme a seção 8 do SCOPE.md."*
+9. *"Crie `classes/privacy/provider.php` com o `null_provider`."*
+10. *"Crie `tests/greeting_test.php` conforme a seção 14."*
 
 O Copilot já conhece as regras do laboratório (`.github/`). Confira cada arquivo antes de
 aceitar — você é o revisor.
@@ -46,14 +48,35 @@ aceitar — você é o revisor.
 
 ```
 cd moodle/public/blocks/greeting
+npx grunt amd
+```
 
-moodle-check version.php block_greeting.php db/access.php classes/privacy/provider.php
+Isso compila `amd/src/greeting.js` em `amd/build/greeting.min.js` — o Moodle serve o build,
+nunca a fonte. **Nunca edite `amd/build` à mão**; rode `npx grunt amd` de novo sempre que
+mexer no `.js`.
+
+### Veja o hook bloquear (de propósito)
+
+Antes do commit de verdade, quebre alguma coisa: apague um `;` no fim de uma linha do
+`greeting.js`, ou troque aspas simples por duplas em qualquer lugar do PHP. Depois:
+
+```
+git add -A && git commit -m "teste"
+```
+
+O hook deve **recusar** o commit e apontar o erro — PHPCS se foi no PHP, ESLint se foi no JS.
+Desfaça a quebra (`phpcbf <arquivo>` resolve boa parte do lado PHP sozinho) antes de seguir.
+É assim que o hook te protege de verdade nos seus próprios plugins, não só um exemplo.
+
+### Commit de verdade
+
+```
+moodle-check version.php block_greeting.php db/access.php classes/local/greeting_text.php classes/privacy/provider.php
 git add -A && git commit -m "block_greeting: hello world"
 ```
 
-No `git commit`, o hook roda: `php -l` → PHPCS → get_string → capability-strings → ...
-**Se bloquear, corrija o que ele apontou** (`phpcbf <arquivo>` conserta boa parte do estilo).
-Não use `--no-verify`.
+No `git commit`, o hook roda: `php -l` → PHPCS → get_string → capability-strings → ESLint →
+Mustache → ... **Se bloquear, corrija o que ele apontou.** Não use `--no-verify`.
 
 ```
 moodle-phpunit blocks/greeting
@@ -73,7 +96,12 @@ No navegador (porta 8000, `admin` / `Sandbox123!`):
    Notificações*).
 2. Vá ao **Painel** → botão **Personalizar esta página** → **Adicionar um bloco** →
    **Saudação**.
-3. A sua frase aparece no bloco. 🎉
+3. A sua frase aparece no bloco, e uma notificação some no topo da página — essa parte vem
+   do `amd/src/greeting.js`. 🎉
+
+Se a notificação não aparecer depois de editar o `.js`, você provavelmente esqueceu o
+`npx grunt amd` (passo 3) ou o cache do navegador está com o build antigo — rode
+`plugin-upgrade` de novo (ele já purga os caches) e recarregue a página.
 
 ---
 

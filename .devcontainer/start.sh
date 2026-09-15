@@ -7,8 +7,19 @@ set -euo pipefail
 WORKSPACE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MOODLE_DIR="$WORKSPACE/moodle"
 CLI="$MOODLE_DIR/admin/cli"
+TOOLS_DIR="$WORKSPACE/tools"
 
 db() { mysql -umoodle -pmoodle -h127.0.0.1 moodle -e "$1" >/dev/null 2>&1; }
+
+# moodle-dev-tools é clonado só uma vez (setup.sh, na criação/prebuild). Aqui, em todo
+# boot, puxamos a versão atual do repo (ff-only: nunca conflita, pois o aluno nunca edita
+# tools/ direto) e reaplicamos install-tools.sh — refaz os symlinks e recopia os arquivos
+# de suporte do hook. Assim um Codespace já criado acompanha atualizações do dev-tools ao
+# ser reaberto, sem precisar reconstruir.
+if [ -d "$TOOLS_DIR/.git" ]; then
+    git -C "$TOOLS_DIR" pull --ff-only --quiet 2>/dev/null || true
+    bash "$WORKSPACE/.devcontainer/install-tools.sh" >/dev/null 2>&1 || true
+fi
 
 sudo service mariadb start
 

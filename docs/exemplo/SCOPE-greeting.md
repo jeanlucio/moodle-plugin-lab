@@ -55,11 +55,19 @@ N/A — exercício.
 - `init()` define o título do bloco com `get_string('pluginname', 'block_greeting')`.
 - `get_content()`:
   - retorna cedo se `$this->content` já existe;
+  - obtém a frase de `\block_greeting\local\greeting_text::get_message()` — **não** chame
+    `get_string('greeting', ...)` direto aqui; é a classe que sabe montar o texto;
   - monta `$this->content->text` com
-    `$OUTPUT->render_from_template('block_greeting/content', ['greeting' => get_string('greeting', 'block_greeting')])`;
+    `$OUTPUT->render_from_template('block_greeting/content', ['greeting' => $message])`;
+  - registra `$this->page->requires->js_call_amd('block_greeting/greeting', 'init');`;
   - `$this->content->footer = ''`.
 - `applicable_formats()` retorna `['all' => true]`.
 - Métodos que sobrescrevem `block_base` sem mudar semântica usam `#[\Override]`.
+- `\block_greeting\local\greeting_text` (`classes/local/greeting_text.php`): uma classe com
+  um único método estático, `get_message(): string`, que retorna
+  `get_string('greeting', 'block_greeting')`. Existe só pra separar "de onde vem a frase" de
+  "como o bloco se comporta" — no plugin principal de vocês essa classe cresceria pra ter
+  lógica de verdade; aqui ela é minúscula de propósito, só pra fixar o padrão.
 
 ---
 
@@ -77,6 +85,9 @@ blocks/greeting/
 ├── .github/copilot-instructions.md    ✅ (vem do plugin-new)
 ├── .github/instructions/              ✅ (vem do plugin-new)
 ├── block_greeting.php                 ❌ classe do bloco
+├── classes/local/greeting_text.php    ❌ de onde vem a frase (autoload, namespace)
+├── amd/src/greeting.js                ❌ módulo AMD (fonte)
+├── amd/build/greeting.min.js          ⚙️ gerado por `npx grunt amd` — não editar à mão
 ├── db/
 │   ├── access.php                     ❌ capabilities
 │   └── upgrade.php                    ✅ (vem do plugin-new, no-op)
@@ -122,6 +133,20 @@ Nenhum.
   }
   ```
 - Sem ícone decorativo, sem imagem, sem input — nada de a11y extra nesta V1.
+- **`amd/src/greeting.js`:** ao carregar o bloco, mostra uma notificação (`core/notification`)
+  com o texto da string `jsloaded`, obtida via `core/str` — não em `get_content()`:
+  ```js
+  import Notification from 'core/notification';
+  import {getString} from 'core/str';
+
+  export const init = async() => {
+      const message = await getString('jsloaded', 'block_greeting');
+      Notification.addNotification({message, type: 'info'});
+  };
+  ```
+  Mostra o padrão AMD do Moodle (`export const init`, sem jQuery, sem `<script>` solto) e o
+  mesmo princípio de "nada de texto hardcoded" — só que do lado do JS: a mensagem também vem
+  de `get_string()` (via `core/str`), nunca escrita direto no `.js`.
 
 ---
 
@@ -134,6 +159,7 @@ Chaves em **ordem alfabética estrita**. `lang/en` e `lang/pt_br` em sincronia.
 | `greeting` | "Hello! Welcome to Moodle plugin development." | "Olá! Bem-vindo ao desenvolvimento de plugins Moodle." |
 | `greeting:addinstance` | "Add a new greeting block" | "Adicionar um novo bloco de saudação" |
 | `greeting:myaddinstance` | "Add a new greeting block to the Dashboard" | "Adicionar um novo bloco de saudação ao Painel" |
+| `jsloaded` | "This block was loaded via JavaScript." | "Este bloco foi carregado via JavaScript." |
 | `pluginname` | "Greeting" | "Saudação" |
 
 ---
@@ -147,6 +173,7 @@ Nenhuma.
 ## 11. Dependências e Integrações
 
 - APIs do core: Output (`render_from_template`), String Manager (`get_string`).
+- APIs do core em JS: `core/notification`, `core/str`.
 - Sem dependência de outros plugins.
 
 ---
@@ -175,12 +202,16 @@ Não armazena nenhum dado pessoal e não faz chamada externa →
 ## 14. Plano de Testes
 
 - **PHPUnit** — `tests/greeting_test.php`, namespace `block_greeting`, classe
-  `greeting_test` (`final`, estende `\advanced_testcase`), docblock com
-  `@covers \block_greeting`.
+  `greeting_test` (`final`, estende `\advanced_testcase`), docblock com **duas** linhas de
+  `@covers`: `@covers \block_greeting` e `@covers \block_greeting\local\greeting_text` — um
+  único teste exercita as duas classes (o bloco chama a classe), então as duas entram na
+  mesma anotação em vez de um segundo arquivo de teste (regra de cobertura do CLAUDE.md).
   - Teste: a string `greeting` (via `get_string`) aparece no HTML que o template produz.
     Renderize o template diretamente com `$PAGE->get_renderer('core')->render_from_template(...)`
     ou compare `get_string('greeting', 'block_greeting')` com o resultado — o Copilot ajuda
     a achar a forma mais limpa.
+- **`amd/src/greeting.js`** — sem teste automatizado nesta V1 (fora de escopo); verificar a
+  olho no navegador.
 - **Behat** — não obrigatório neste exercício.
 
 ---
@@ -202,8 +233,9 @@ Não armazena nenhum dado pessoal e não faz chamada externa →
 ## 16. Roteiro de Implementação
 
 Ver `docs/exemplo/PASSOS.md`. Ordem sugerida: `version.php` → `lang/` → `db/access.php` →
-`block_greeting.php` → `templates/content.mustache` → `styles.css` →
-`classes/privacy/provider.php` → `tests/greeting_test.php`.
+`classes/local/greeting_text.php` → `block_greeting.php` → `templates/content.mustache` →
+`styles.css` → `amd/src/greeting.js` (+ `npx grunt amd`) → `classes/privacy/provider.php` →
+`tests/greeting_test.php`.
 
 ---
 
@@ -211,6 +243,11 @@ Ver `docs/exemplo/PASSOS.md`. Ordem sugerida: `version.php` → `lang/` → `db/
 
 Frase fixa em vez de configurável na V1 — reduz a superfície (sem `edit_form.php`, sem
 `format_string` de config) para focar no fluxo. A versão configurável fica como Nível 2.
+
+O JS é uma notificação única ao carregar, não uma interação (clique, formulário) — o objetivo
+é passar pelo padrão AMD/`core/str`/`core/notification` e pelo gate de ESLint, sem entrar em
+território de acessibilidade de elemento interativo (foco por teclado, `aria-*`), que é
+assunto pro plugin principal de vocês, não pra este aquecimento.
 
 ---
 
