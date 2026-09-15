@@ -204,10 +204,12 @@ Não armazena nenhum dado pessoal e não faz chamada externa →
 ## 14. Plano de Testes
 
 - **PHPUnit** — `tests/greeting_test.php`, namespace `block_greeting`, classe
-  `greeting_test` (`final`, estende `\advanced_testcase`), docblock com **duas** linhas de
-  `@covers`: `@covers \block_greeting` e `@covers \block_greeting\local\greeting_text` — um
-  único teste exercita as duas classes (o bloco chama a classe), então as duas entram na
-  mesma anotação em vez de um segundo arquivo de teste (regra de cobertura do CLAUDE.md).
+  `greeting_test` (`final`, estende `\advanced_testcase`), com **duas** linhas de `@covers`
+  no docblock **da classe** (o que fica logo acima de `class greeting_test`, não o do topo
+  do arquivo — o PHPCS só reconhece cobertura "de classe" nesse): `@covers \block_greeting`
+  e `@covers \block_greeting\local\greeting_text`. Um único teste exercita as duas classes
+  (o bloco chama a classe), então as duas entram na mesma anotação em vez de um segundo
+  arquivo de teste (regra de cobertura do CLAUDE.md).
   - Teste: a string `greeting` (via `get_string`) aparece no HTML que o template produz.
     Renderize o template diretamente com `$PAGE->get_renderer('core')->render_from_template(...)`
     ou compare `get_string('greeting', 'block_greeting')` com o resultado — o Copilot ajuda
