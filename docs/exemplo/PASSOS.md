@@ -22,6 +22,17 @@ Isso cria `moodle/public/blocks/greeting/` com `version.php`, `lang/`, `db/upgra
 
 Abra a pasta no explorador e **leia o `SCOPE.md`** — ele descreve exatamente o que construir.
 
+> **Qual das duas linhas é só deste exercício?**
+>
+> - `plugin-new block greeting` é o comando **de sempre**: você vai usá-lo de novo no seu
+>   plugin principal (`plugin-new <tipo> <nome>`, ex.: `plugin-new local meuplugino`). Ele
+>   sempre cria o esqueleto e já deixa um `SCOPE.md` **em branco** (o modelo de
+>   `docs/TEMPLATE_SCOPE.md`) para você preencher.
+> - O `cp ... SCOPE-greeting.md ...` é **só deste aquecimento**. Ele troca o `SCOPE.md` em
+>   branco por um **já preenchido**, para você pular o planejamento agora e focar no ciclo
+>   (código → verificação → CI). No seu plugin de verdade você **não** roda esse `cp`: abre o
+>   `SCOPE.md` em branco e preenche você mesmo, com a ajuda do Copilot.
+
 ---
 
 ## 2. Construir, com o Copilot
