@@ -24,10 +24,11 @@ Abra a pasta no explorador e **leia o `SCOPE.md`** — ele descreve exatamente o
 
 > **Dica: acompanhe os arquivos sendo criados.** No Explorer (barra lateral), expanda
 > `moodle` → `public` → `blocks` → `greeting`: cada arquivo que o Copilot criar aparece ali.
-> Se preferir ver só o plugin, clique com o botão direito em `greeting` →
-> **Add Folder to Workspace** (a janela recarrega uma vez; a raiz continua aberta ao lado,
-> então o Copilot segue enxergando toda a documentação do laboratório). Não abra o plugin
-> como uma janela separada — o Copilot perderia acesso às regras e ao `docs/`.
+> Se preferir ver só o plugin, use o menu **Arquivo → Adicionar Pasta ao Workspace…** e
+> escolha `/workspaces/moodle-plugin-lab/moodle/public/blocks/greeting` (a janela recarrega
+> uma vez; a raiz continua aberta ao lado, então o Copilot segue enxergando toda a
+> documentação do laboratório). Não abra o plugin como uma janela separada — o Copilot
+> perderia acesso às regras e ao `docs/`.
 
 > **O que são esses comandos?**
 >
