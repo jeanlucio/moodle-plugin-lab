@@ -114,8 +114,25 @@ Nenhum.
 
 ## 8. Interface, Templates e Acessibilidade
 
-- **`templates/content.mustache`:**
+- **`templates/content.mustache`:** primeiro um bloco `{{! }}` só com a **licença GPL** e,
+  depois dele, o bloco do `@template` (segundo bloco, como o verificador exige):
   ```
+  {{!
+      This file is part of Moodle - https://moodle.org/
+
+      Moodle is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      (at your option) any later version.
+
+      Moodle is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+
+      You should have received a copy of the GNU General Public License
+      along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+  }}
   {{!
       @template block_greeting/content
 
@@ -127,7 +144,34 @@ Nenhum.
   <p class="block_greeting-message">{{greeting}}</p>
   ```
   Chave dupla `{{greeting}}` (a string é conteúdo renderizado, não markup confiável).
-- **`styles.css`:** cabeçalho duplo (GPL + JSDoc). Uma regra, escopada pela classe do bloco:
+- **`styles.css`:** começa com o **cabeçalho duplo** — a licença GPL e, colado embaixo, o
+  JSDoc (não pode faltar):
+  ```css
+  /**
+   * This file is part of Moodle - https://moodle.org/
+   *
+   * Moodle is free software: you can redistribute it and/or modify
+   * it under the terms of the GNU General Public License as published by
+   * the Free Software Foundation, either version 3 of the License, or
+   * (at your option) any later version.
+   *
+   * Moodle is distributed in the hope that it will be useful,
+   * but WITHOUT ANY WARRANTY; without even the implied warranty of
+   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   * GNU General Public License for more details.
+   *
+   * You should have received a copy of the GNU General Public License
+   * along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+   */
+  /**
+   * Styles for block_greeting.
+   *
+   * @package    block_greeting
+   * @copyright  2026 [Seu nome]
+   * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+   */
+  ```
+  Depois do cabeçalho, uma regra, escopada pela classe do bloco:
   ```css
   .block_greeting .block_greeting-message {
       font-weight: 600;
@@ -138,6 +182,29 @@ Nenhum.
 - **`amd/src/greeting.js`:** ao carregar o bloco, mostra uma notificação (`core/notification`)
   com o texto da string `jsloaded`, obtida via `core/str` — não em `get_content()`:
   ```js
+  // This file is part of Moodle - https://moodle.org/
+  //
+  // Moodle is free software: you can redistribute it and/or modify
+  // it under the terms of the GNU General Public License as published by
+  // the Free Software Foundation, either version 3 of the License, or
+  // (at your option) any later version.
+  //
+  // Moodle is distributed in the hope that it will be useful,
+  // but WITHOUT ANY WARRANTY; without even the implied warranty of
+  // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  // GNU General Public License for more details.
+  //
+  // You should have received a copy of the GNU General Public License
+  // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+  /**
+   * Shows a notification when the greeting block loads.
+   *
+   * @module     block_greeting/greeting
+   * @copyright  2026 [Seu nome]
+   * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+   */
+
   import Notification from 'core/notification';
   import {getString} from 'core/str';
 
@@ -146,7 +213,7 @@ Nenhum.
       Notification.addNotification({message, type: 'info'});
   };
   ```
-  Mostra o padrão AMD do Moodle (`export const init`, sem jQuery, sem `<script>` solto) e o
+  O cabeçalho de licença + `@module` é obrigatório no topo do arquivo. Mostra o padrão AMD do Moodle (`export const init`, sem jQuery, sem `<script>` solto) e o
   mesmo princípio de "nada de texto hardcoded" — só que do lado do JS: a mensagem também vem
   de `get_string()` (via `core/str`), nunca escrita direto no `.js`.
 

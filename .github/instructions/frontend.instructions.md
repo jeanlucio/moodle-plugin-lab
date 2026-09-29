@@ -6,6 +6,35 @@ applyTo: "**/amd/**,**/templates/**,**/*.mustache,**/*.css,**/*.scss"
 
 ## JavaScript (`amd/src/`)
 
+- **Todo `amd/src/*.js` novo começa com o cabeçalho de licença** (comentários `//`) e, logo
+  abaixo, um JSDoc com `@module <componente>/<nome-do-arquivo>` (o caminho tem de bater com o
+  arquivo real), `@copyright <ano> <autor>` e `@license`:
+
+```js
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Descrição curta do módulo.
+ *
+ * @module     <componente>/<nome>
+ * @copyright  <ano> <autor>
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+```
+
 - Nunca `<script>` em PHP/HTML. Só módulos AMD em `amd/src/`, carregados via
   `$PAGE->requires->js_call_amd()`. Recompilar `amd/build/` com `npx grunt amd` (de dentro
   da pasta do plugin) e **commitar o build**.
@@ -24,6 +53,35 @@ applyTo: "**/amd/**,**/templates/**,**/*.mustache,**/*.css,**/*.scss"
 
 ## Mustache (`templates/*.mustache`)
 
+- **Todo `.mustache` novo começa com um bloco `{{! ... }}` só de licença GPL**, e o bloco
+  do `@template` vem **depois**, como segundo bloco:
+
+```
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template <componente>/<nome>
+
+    Example context (json):
+    {
+    }
+}}
+```
+
 - Todo template tem `@template component/nome` no **segundo** bloco `{{! ... }}` e o rótulo
   exato `Example context (json):` (sem `@`).
 - Toda `<img>` no JSON de exemplo com `alt="..."`. Nunca `<h1>`–`<h6>` vazio.
@@ -33,6 +91,36 @@ applyTo: "**/amd/**,**/templates/**,**/*.mustache,**/*.css,**/*.scss"
 - Modal: botão de fechar com `data-bs-dismiss="modal"` **e** `data-dismiss="modal"`.
 
 ## CSS / SCSS
+
+- **Todo `styles.css` novo começa com o cabeçalho duplo** — o bloco de licença GPL e, colado
+  logo abaixo (sem linha em branco entre eles), o bloco JSDoc com `@package` (Frankenstyle
+  puro), `@copyright <ano> <autor>` e `@license`. Sem esse cabeçalho o arquivo está errado:
+
+```css
+/**
+ * This file is part of Moodle - https://moodle.org/
+ *
+ * Moodle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Moodle is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+ */
+/**
+ * Styles for <componente>.
+ *
+ * @package    <componente>
+ * @copyright  <ano> <autor>
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+```
 
 - **Nunca** `!important`. Resolver conflito aumentando a especificidade do seletor.
 - Todo seletor escopado com a classe de página do plugin:

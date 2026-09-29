@@ -49,21 +49,125 @@ Abra a pasta no explorador e **leia o `SCOPE.md`** — ele descreve exatamente o
 
 ## 2. Construir, com o Copilot
 
-Abra o **Copilot Chat** (modelo Claude Sonnet ou GPT-4.1). Peça, um de cada vez:
+Abra o **Copilot Chat** (modelo Claude Sonnet ou GPT-4.1). Peça, **um de cada vez**, os 10
+comandos abaixo. **Antes de colar cada um, leia a explicação embaixo dele**: o comando é curto,
+mas a IA vai fazer mais do que ele diz, e você precisa saber o quê para conferir o resultado.
+O Copilot já conhece as regras do laboratório (`.github/`) — mesmo assim, você é o revisor:
+se o que ele gerou não bate com a explicação, peça para corrigir.
 
-1. *"Ajuste o `version.php` do block_greeting: `requires` para Moodle 5.2 (2026042000) e `release` 1.0.0. Mantenha a maturity ALPHA como está."*
-2. *"Crie `lang/en/block_greeting.php` e `lang/pt_br/block_greeting.php` com as strings da seção 9 do SCOPE.md, em ordem alfabética."*
-3. *"Crie `db/access.php` com as capabilities `block/greeting:addinstance` e `block/greeting:myaddinstance`."*
-4. *"Crie `classes/local/greeting_text.php` conforme a seção 4 do SCOPE.md."*
-5. *"Crie `block_greeting.php` conforme a seção 4 do SCOPE.md — chamando `greeting_text::get_message()` e registrando o módulo AMD."*
-6. *"Crie `templates/content.mustache` conforme a seção 8."*
-7. *"Crie `styles.css` com a regra escopada da seção 8."*
-8. *"Crie `amd/src/greeting.js` conforme a seção 8 do SCOPE.md."*
-9. *"Crie `classes/privacy/provider.php` com o `null_provider`."*
-10. *"Crie `tests/greeting_test.php` conforme a seção 14."*
+### 2.1 `version.php` — a identidade do plugin
 
-O Copilot já conhece as regras do laboratório (`.github/`). Confira cada arquivo antes de
-aceitar — você é o revisor.
+> *"Ajuste o `version.php` do block_greeting: `requires` para Moodle 5.2 (2026042000) e `release` 1.0.0. Mantenha a maturity ALPHA como está."*
+
+**O que a IA vai fazer:** o `version.php` é o arquivo que apresenta o plugin ao Moodle. Ele tem
+o `component` (`block_greeting`, o nome técnico), o `version` (um número no formato de data — o
+Moodle compara esse número para saber se precisa rodar um *upgrade*), o `requires` (a versão
+mínima do Moodle; em versões mais antigas o plugin se recusa a instalar), a `maturity` (rótulo
+de estabilidade, já vem `ALPHA`) e o `release` (a versão "para humanos"). A IA só altera dois
+valores: `requires` e `release`.
+
+### 2.2 `lang/` — todo texto visível fica em arquivos de idioma
+
+> *"Crie `lang/en/block_greeting.php` e `lang/pt_br/block_greeting.php` com as strings da seção 9 do SCOPE.md, em ordem alfabética."*
+
+**O que a IA vai fazer:** no Moodle **nenhum texto é escrito direto no código**: cada frase
+visível é uma *string* de idioma (`$string['chave'] = 'texto';`), guardada em um arquivo por
+idioma — inglês (`en`) e português (`pt_br`). São 6 chaves: `greeting` (a frase do bloco),
+`greeting:addinstance` e `greeting:myaddinstance` (nomes das permissões, que aparecem na tela de
+papéis), `jsloaded` (a mensagem do JavaScript), `pluginname` (o nome do bloco) e
+`privacy:metadata` (o texto da privacidade). As chaves precisam estar em **ordem alfabética
+estrita** e os dois arquivos **em sincronia** — o hook confere.
+
+### 2.3 `db/access.php` — as permissões do bloco
+
+> *"Crie `db/access.php` com as capabilities `block/greeting:addinstance` e `block/greeting:myaddinstance`."*
+
+**O que a IA vai fazer:** *capability* é uma permissão do Moodle. Todo bloco precisa de duas:
+`addinstance` (permite adicionar o bloco a uma página de curso) e `myaddinstance` (permite
+adicionar ao Painel do usuário). Sem elas, o Moodle **não mostra o bloco** no menu "Adicionar um
+bloco". O arquivo também diz quais papéis (professor, gestor, usuário comum) recebem cada
+permissão por padrão. Os nomes precisam ter uma string correspondente no passo 2.2 — o hook
+(`capability-strings`) confere.
+
+### 2.4 `classes/local/greeting_text.php` — sua primeira classe
+
+> *"Crie `classes/local/greeting_text.php` conforme a seção 4 do SCOPE.md."*
+
+**O que a IA vai fazer:** cria uma classe pequena com **um método estático**,
+`get_message(): string`, que devolve `get_string('greeting', 'block_greeting')`. O importante
+é onde e como ela é escrita: a pasta `classes/` é **carregada automaticamente** pelo Moodle
+(*autoload*), desde que o *namespace* bata com o caminho — `classes/local/greeting_text.php`
+→ `namespace block_greeting\local;`. Por isso não existe `require` em lugar nenhum. Ela separa
+"de onde vem a frase" de "como o bloco se comporta"; no seu plugin de verdade, é nessas classes
+que a lógica vai crescer.
+
+### 2.5 `block_greeting.php` — a classe principal do bloco
+
+> *"Crie `block_greeting.php` conforme a seção 4 do SCOPE.md — chamando `greeting_text::get_message()` e registrando o módulo AMD."*
+
+**O que a IA vai fazer:** esse é o "controlador" do bloco, e fica na **raiz** do plugin porque o
+Moodle exige esse nome e lugar. Dois métodos: `init()` define o título do bloco, e
+`get_content()` monta o conteúdo — pega a frase da classe do passo 2.4, renderiza o template
+Mustache (passo 2.6) e registra o módulo JavaScript (passo 2.8) com `js_call_amd`. Ele decide
+**o que** mostrar; não contém HTML nem texto. ⚠️ **Confira:** só o `get_content()` leva
+`#[\Override]`. Se a IA colocar isso no `init()`, o PHP dá erro fatal (o `block_base` não tem
+um `init()` para sobrescrever).
+
+### 2.6 `templates/content.mustache` — o HTML, separado do PHP
+
+> *"Crie `templates/content.mustache` conforme a seção 8."*
+
+**O que a IA vai fazer:** o HTML do bloco **não** fica dentro do PHP: fica num *template*
+Mustache. O arquivo tem **dois** comentários de cabeçalho no topo: o primeiro só com a
+licença GPL, e o segundo com o `@template block_greeting/content` e um contexto de exemplo em
+JSON (o verificador exige) e uma linha de HTML,
+`<p class="block_greeting-message">{{greeting}}</p>`. O `{{greeting}}` é um espaço reservado que
+o PHP preenche; as **chaves duplas** escapam o conteúdo, o que protege contra HTML malicioso.
+
+### 2.7 `styles.css` — a aparência
+
+> *"Crie `styles.css` com a regra escopada da seção 8."*
+
+**O que a IA vai fazer:** cria o CSS do bloco, com um cabeçalho duplo (licença + descrição) e
+**uma** regra, cujo seletor começa com `.block_greeting` — isso é o *escopo*: garante que o
+estilo só vale dentro deste bloco e não vaza para o resto do Moodle. A cor usa a variável do
+tema (`var(--primary, ...)`) em vez de um valor fixo, e não usa `!important`. Você não precisa
+"ligar" o CSS em lugar nenhum: o Moodle carrega o `styles.css` de todo plugin sozinho.
+
+### 2.8 `amd/src/greeting.js` — o JavaScript
+
+> *"Crie `amd/src/greeting.js` conforme a seção 8 do SCOPE.md."*
+
+**O que a IA vai fazer:** cria um módulo JavaScript no padrão do Moodle (*AMD*). O arquivo
+começa com o **cabeçalho de licença** (comentários `//`) e um bloco de documentação com
+`@module block_greeting/greeting` — confira que ele existe, é a omissão mais comum. Ele exporta uma
+função `init`, que o PHP chama pelo `js_call_amd` do passo 2.5. Dentro dela, busca a string
+`jsloaded` com `core/str` (de novo: nenhum texto fixo no código) e mostra com
+`core/notification`. **Atenção:** esse é o arquivo *fonte*. O Moodle serve a versão compilada,
+em `amd/build/` — que só existe depois do `npx grunt amd` do passo 3. Escrever o `.js` e não
+compilar é o erro mais comum aqui.
+
+### 2.9 `classes/privacy/provider.php` — privacidade
+
+> *"Crie `classes/privacy/provider.php` com o `null_provider`."*
+
+**O que a IA vai fazer:** todo plugin do Moodle precisa declarar **quais dados pessoais
+guarda** (é uma exigência de proteção de dados, tipo LGPD). Este bloco não guarda nenhum, então
+a declaração é a mais simples possível: uma classe que implementa `null_provider` e tem um único
+método, `get_reason()`, que devolve a string `privacy:metadata` (criada no passo 2.2). Sem esse
+arquivo, o plugin falha nas verificações de privacidade do Moodle.
+
+### 2.10 `tests/greeting_test.php` — o teste automatizado
+
+> *"Crie `tests/greeting_test.php` conforme a seção 14."*
+
+**O que a IA vai fazer:** cria um teste PHPUnit que adiciona o bloco, chama `get_content()` e
+verifica se o texto da string `greeting` aparece no resultado. Ele testa o **resultado
+visível**, não o jeito como o código foi escrito. O cabeçalho da classe de teste tem duas
+linhas `@covers` (o bloco e a classe do passo 2.4), que dizem ao PHPUnit quais classes o teste
+cobre. Você roda com `moodle-phpunit` (passo 3) e o CI roda de novo depois, no GitHub.
+
+Confira cada arquivo antes de aceitar — você é o revisor.
 
 ---
 

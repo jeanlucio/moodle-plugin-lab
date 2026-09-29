@@ -16,6 +16,11 @@ Mustache ou SQL de um plugin Moodle, siga estas regras.
 - Todo arquivo novo começa com o cabeçalho GPL v3+ do Moodle, seguido do bloco PHPDoc
   com `@package` (Frankenstyle puro, ex.: `local_gradeboard`), `@copyright <ano> <autor>`,
   `@license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later`.
+- **Todo arquivo novo de front-end também começa com o cabeçalho de licença GPL**, no formato
+  do tipo: `styles.css` (bloco GPL + JSDoc colado, sem linha em branco), `amd/src/*.js`
+  (comentários `//` de licença + JSDoc com `@module`) e `templates/*.mustache` (bloco
+  `{{! ... }}` de licença **antes** do bloco do `@template`). Os textos completos estão em
+  `.github/instructions/frontend.instructions.md`. Arquivo sem esse cabeçalho está errado.
 - `defined('MOODLE_INTERNAL') || die();` em arquivos com efeito colateral em escopo global
   (`db/*.php` que populam arrays, `settings.php`). **Não** em arquivos que só definem uma
   classe, nem em `lib.php` (só funções).
