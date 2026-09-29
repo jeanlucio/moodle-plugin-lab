@@ -57,14 +57,18 @@ se o que ele gerou não bate com a explicação, peça para corrigir.
 
 ### 2.1 `version.php` — a identidade do plugin
 
-> *"Ajuste o `version.php` do block_greeting: `requires` para Moodle 5.2 (2026042000) e `release` 1.0.0. Mantenha a maturity ALPHA como está."*
+> *"Ajuste o `version.php` do block_greeting: `requires` para Moodle 5.2 (2026042000), `release` 1.0.0 e some 1 ao número de `version`. Mantenha a maturity ALPHA como está."*
 
 **O que a IA vai fazer:** o `version.php` é o arquivo que apresenta o plugin ao Moodle. Ele tem
 o `component` (`block_greeting`, o nome técnico), o `version` (um número no formato de data — o
 Moodle compara esse número para saber se precisa rodar um *upgrade*), o `requires` (a versão
 mínima do Moodle; em versões mais antigas o plugin se recusa a instalar), a `maturity` (rótulo
-de estabilidade, já vem `ALPHA`) e o `release` (a versão "para humanos"). A IA só altera dois
-valores: `requires` e `release`.
+de estabilidade, já vem `ALPHA`) e o `release` (a versão "para humanos"). A IA altera três
+valores: `requires`, `release` e o `version` (soma 1). **Esse último é o que importa:** o
+`plugin-new` já instalou o esqueleto do bloco no Moodle; o Moodle só *atualiza* um plugin —
+lendo o `db/access.php` novo, por exemplo — quando o número `version` **sobe**. Sem isso o
+`plugin-upgrade` diz "nenhuma atualização necessária" e as permissões do bloco nunca são
+registradas.
 
 ### 2.2 `lang/` — todo texto visível fica em arquivos de idioma
 
@@ -226,9 +230,46 @@ No navegador (porta 8000, `admin` / `Sandbox123!`):
 3. A sua frase aparece no bloco, e uma notificação some no topo da página — essa parte vem
    do `amd/src/greeting.js`. 🎉
 
+**Se o `plugin-upgrade` disser "Nenhuma atualização necessária"**, o `version` do
+`version.php` não subiu (passo 2.1): some 1 ao número (ex.: `2026092900` → `2026092901`) e
+rode `plugin-upgrade` de novo. Vale para o seu plugin de verdade também: sempre que mexer em
+`db/` (permissões, tabelas), suba o `version`.
+
 Se a notificação não aparecer depois de editar o `.js`, você provavelmente esqueceu o
 `npx grunt amd` (passo 3) ou o cache do navegador está com o build antigo — rode
 `plugin-upgrade` de novo (ele já purga os caches) e recarregue a página.
+
+### 4.1 Mudou alguma coisa? O que fazer para o Moodle enxergar
+
+O Moodle guarda em **cache** os textos de idioma, os templates e o CSS. Por isso, depois de
+editar um arquivo, a página pode continuar mostrando a versão antiga. O que fazer depende do
+que você mudou:
+
+| O que você mudou | O que fazer |
+|---|---|
+| Uma frase (`lang/en/...` e `lang/pt_br/...`) | `plugin-upgrade` (ou só limpar os caches) e recarregar |
+| `templates/*.mustache` ou `styles.css` | `plugin-upgrade` (ou só limpar os caches) e recarregar |
+| `amd/src/*.js` | `npx grunt amd`, depois `plugin-upgrade` e recarregar |
+| Lógica em `block_greeting.php` ou `classes/` | só recarregar a página (não usa cache) |
+| `db/access.php` (permissões) ou qualquer coisa em `db/` | **suba o `version`** no `version.php` (some 1) e rode `plugin-upgrade` |
+
+**Exemplo — trocar o texto da saudação:**
+
+1. Edite a string `greeting` **nos dois arquivos**, `lang/en/block_greeting.php` e
+   `lang/pt_br/block_greeting.php` (as duas línguas sempre em sincronia).
+2. Rode `plugin-upgrade` (ele faz o upgrade **e** limpa os caches). Não precisa subir o
+   `version` nesse caso — só mudou texto.
+3. Recarregue a página do Moodle com `Ctrl+Shift+R`, para o navegador também largar a versão
+   antiga.
+
+**Só limpar os caches** (sem upgrade), de duas formas:
+
+- No terminal: `php /workspaces/moodle-plugin-lab/moodle/admin/cli/purge_caches.php`
+- No navegador: *Administração do site → Desenvolvimento → Limpar todos os caches*, e clique
+  em **Limpar todos os caches**.
+
+Se ainda aparecer a versão antiga depois de limpar, é o cache do **navegador**: recarregue com
+`Ctrl+Shift+R`.
 
 ---
 
@@ -239,6 +280,19 @@ plugin-publish
 ```
 
 (Primeira vez: ele pede `gh auth login` no navegador — uma vez só.)
+
+> **O `plugin-publish` serve para qualquer plugin**, não só para este: você vai usá-lo de novo
+> no seu plugin principal.
+>
+> - **Como usar:** rode dentro da pasta do plugin, ou passe o caminho
+>   (`plugin-publish blocks/greeting`). Ele lê o nome do componente no `version.php` e cria o
+>   repositório `moodle-<componente>` **público** na sua conta (ex.: `moodle-block_greeting`,
+>   `moodle-local_meuplugino`), com o primeiro push.
+> - **Opções:** `--repo NOME` escolhe outro nome para o repositório; `--private` cria privado;
+>   `--team login1,login2` adiciona colegas de grupo como colaboradores.
+> - **Só uma vez por plugin, e só com tudo commitado.** Se o plugin já tem um repositório
+>   remoto, ele recusa; se há alterações sem `git commit`, também recusa. Depois da primeira
+>   vez, o envio de novas mudanças é o `git push` de sempre.
 
 Abra `https://github.com/<sua-conta>/moodle-block_greeting` → aba **Actions** → o workflow
 **Moodle Plugin CI** deve rodar e ficar **verde** (phplint, phpcs, phpdoc, phpunit, ...).
