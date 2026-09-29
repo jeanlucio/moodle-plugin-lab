@@ -51,7 +51,7 @@ Abra a pasta no explorador e **leia o `SCOPE.md`** — ele descreve exatamente o
 
 Abra o **Copilot Chat** (modelo Claude Sonnet ou GPT-4.1). Peça, um de cada vez:
 
-1. *"Ajuste o `version.php` do block_greeting: `requires` para Moodle 5.2, `release` 1.0.0, maturity ALPHA."*
+1. *"Ajuste o `version.php` do block_greeting: `requires` para Moodle 5.2 (2026042000) e `release` 1.0.0. Mantenha a maturity ALPHA como está."*
 2. *"Crie `lang/en/block_greeting.php` e `lang/pt_br/block_greeting.php` com as strings da seção 9 do SCOPE.md, em ordem alfabética."*
 3. *"Crie `db/access.php` com as capabilities `block/greeting:addinstance` e `block/greeting:myaddinstance`."*
 4. *"Crie `classes/local/greeting_text.php` conforme a seção 4 do SCOPE.md."*
