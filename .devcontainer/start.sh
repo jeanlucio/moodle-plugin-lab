@@ -17,6 +17,8 @@ db() { mysql -umoodle -pmoodle -h127.0.0.1 moodle -e "$1" >/dev/null 2>&1; }
 # de suporte do hook. Assim um Codespace já criado acompanha atualizações do dev-tools ao
 # ser reaberto, sem precisar reconstruir.
 if [ -d "$TOOLS_DIR/.git" ]; then
+    # Clones antigos têm o phpstan.sh editado à mão pelo install-tools.sh antigo — descarta.
+    git -C "$TOOLS_DIR" checkout -- . 2>/dev/null || true
     git -C "$TOOLS_DIR" pull --ff-only --quiet 2>/dev/null || true
     bash "$WORKSPACE/.devcontainer/install-tools.sh" >/dev/null 2>&1 || true
 fi

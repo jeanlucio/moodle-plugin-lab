@@ -39,10 +39,12 @@ chmod +x "$TOOLS_DIR/pre-commit" "$TOOLS_DIR/prepare-commit-msg"
 git config --global core.hooksPath "$HOOKS_DIR"
 
 # --- moodle-phpstan: corrige o único path hardcoded do script e liga o wrapper ---
-sed -i "s#/home/ubuntu/moodle-dev-tools/phpstan#$TOOLS_DIR/phpstan#g" \
-    "$TOOLS_DIR/phpstan.sh"
-chmod +x "$TOOLS_DIR/phpstan.sh" "$TOOLS_DIR/scope-audit.sh"
-ln -sf "$TOOLS_DIR/phpstan.sh"     "$BIN_DIR/moodle-phpstan"
+# O patch vai numa CÓPIA fora do clone: editar tools/phpstan.sh deixaria o clone sujo
+# (aparece no Source Control) e travaria o 'git pull --ff-only' do start.sh.
+sed "s#/home/ubuntu/moodle-dev-tools/phpstan#$TOOLS_DIR/phpstan#g" \
+    "$TOOLS_DIR/phpstan.sh" > "$SUPPORT_DIR/phpstan.sh"
+chmod +x "$SUPPORT_DIR/phpstan.sh" "$TOOLS_DIR/scope-audit.sh"
+ln -sf "$SUPPORT_DIR/phpstan.sh"   "$BIN_DIR/moodle-phpstan"
 ln -sf "$TOOLS_DIR/scope-audit.sh" "$BIN_DIR/moodle-scope-audit"
 
 if command -v composer >/dev/null 2>&1 && [ -f "$TOOLS_DIR/phpstan/composer.json" ]; then
