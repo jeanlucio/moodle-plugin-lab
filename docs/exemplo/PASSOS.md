@@ -22,7 +22,7 @@ Isso cria `moodle/public/blocks/greeting/` com `version.php`, `lang/`, `db/upgra
 
 Abra a pasta no explorador e **leia o `SCOPE.md`** — ele descreve exatamente o que construir.
 
-> **Qual das duas linhas é só deste exercício?**
+> **O que são esses comandos?**
 >
 > - `plugin-new block greeting` é o comando **de sempre**: você vai usá-lo de novo no seu
 >   plugin principal (`plugin-new <tipo> <nome>`, ex.: `plugin-new local meuplugino`). Ele
