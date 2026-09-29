@@ -22,6 +22,13 @@ Isso cria `moodle/public/blocks/greeting/` com `version.php`, `lang/`, `db/upgra
 
 Abra a pasta no explorador e **leia o `SCOPE.md`** — ele descreve exatamente o que construir.
 
+> **Dica: acompanhe os arquivos sendo criados.** No Explorer (barra lateral), expanda
+> `moodle` → `public` → `blocks` → `greeting`: cada arquivo que o Copilot criar aparece ali.
+> Se preferir ver só o plugin, clique com o botão direito em `greeting` →
+> **Add Folder to Workspace** (a janela recarrega uma vez; a raiz continua aberta ao lado,
+> então o Copilot segue enxergando toda a documentação do laboratório). Não abra o plugin
+> como uma janela separada — o Copilot perderia acesso às regras e ao `docs/`.
+
 > **O que são esses comandos?**
 >
 > - `plugin-new block greeting` é o comando **de sempre**: você vai usá-lo de novo no seu
