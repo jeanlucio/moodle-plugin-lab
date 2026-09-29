@@ -163,6 +163,7 @@ Chaves em **ordem alfabética estrita**. `lang/en` e `lang/pt_br` em sincronia.
 | `greeting:myaddinstance` | "Add a new greeting block to the Dashboard" | "Adicionar um novo bloco de saudação ao Painel" |
 | `jsloaded` | "This block was loaded via JavaScript." | "Este bloco foi carregado via JavaScript." |
 | `pluginname` | "Greeting" | "Saudação" |
+| `privacy:metadata` | "The Greeting block does not store any personal data." | "O bloco Saudação não armazena nenhum dado pessoal." |
 
 ---
 
