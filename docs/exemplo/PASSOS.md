@@ -32,6 +32,10 @@ Abra a pasta no explorador e **leia o `SCOPE.md`** — ele descreve exatamente o
 >   branco por um **já preenchido**, para você pular o planejamento agora e focar no ciclo
 >   (código → verificação → CI). No seu plugin de verdade você **não** roda esse `cp`: abre o
 >   `SCOPE.md` em branco e preenche você mesmo, com a ajuda do Copilot.
+>
+> **Atenção:** ao terminar, o `plugin-new` imprime "Próximos passos: abra o `SCOPE.md` e
+> preencha o planejamento". **Neste exercício ignore os passos 1 e 2 dessa mensagem** — o
+> `cp` já deixou o `SCOPE.md` preenchido. Vá direto para a seção 2 (Construir).
 
 > **Dica: acompanhe os arquivos sendo criados.** No Explorer (barra lateral), expanda
 > `moodle` → `public` → `blocks` → `greeting`: cada arquivo que o Copilot criar aparece ali.
