@@ -54,7 +54,8 @@
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true,
         "editor.rulers": [132],
-        "github.copilot.chat.codeGeneration.useInstructionFiles": true
+        "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+        "intelephense.diagnostics.enable": false
       }
     }
   }
