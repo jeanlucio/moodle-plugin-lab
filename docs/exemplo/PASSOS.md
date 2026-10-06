@@ -49,7 +49,7 @@ Abra a pasta no explorador e **leia o `SCOPE.md`** — ele descreve exatamente o
 
 ## 2. Construir, com o Copilot
 
-Abra o **Copilot Chat** (modelo Claude Sonnet ou GPT-4.1). Peça, **um de cada vez**, os 10
+Abra o **Copilot Chat** (com o plano Copilot Student o modelo é automático — *Auto*). Peça, **um de cada vez**, os 10
 comandos abaixo. **Antes de colar cada um, leia a explicação embaixo dele**: o comando é curto,
 mas a IA vai fazer mais do que ele diz, e você precisa saber o quê para conferir o resultado.
 O Copilot já conhece as regras do laboratório (`.github/`) — mesmo assim, você é o revisor:

@@ -8,8 +8,17 @@ Você não instala nada: o Codespace já sobe com o Moodle 5.2 rodando.
 ## 0. O que você precisa antes
 
 - Uma **conta no GitHub** (a sua — não a do professor).
-- **GitHub Copilot** ativo nessa conta. Se você é estudante, ative o **GitHub Student
-  Developer Pack** (github.com/education) — ele dá o **Copilot Pro de graça**.
+- **GitHub Copilot** ativo nessa conta. Se você é estudante, o caminho gratuito é o
+  **GitHub Education**: depois de verificado, você recebe o plano **Copilot Student**.
+  **Atenção — aprovação e ativação são duas etapas separadas.** Ser aprovado no GitHub
+  Education **não liga o Copilot sozinho**, e a ativação pode levar alguns dias. Para ativar:
+  1. Abra <https://github.com/settings/education/benefits>.
+  2. Em "Free GitHub developer resources for students and teachers", clique em **Learn more**.
+  3. Siga os passos para **ativar o Copilot Student** e escolha as suas preferências de uso.
+
+  Se, mesmo aprovado, a sua conta aparecer como **Copilot Free**, como período de teste ou
+  mostrar só opções **pagas**: **não compre nada**. Tente <https://github.com/github-copilot/free_signup>,
+  espere alguns dias e tente de novo. Confira o plano atual em <https://github.com/settings/copilot>.
 - Nada para instalar no seu computador. Tudo roda no navegador.
 
 Você **não** faz fork nem cópia deste repositório. Ele é a bancada compartilhada: você abre
@@ -76,8 +85,9 @@ do laboratório.
   regras do laboratório.
 - Escreva o código dentro da pasta do seu plugin (`moodle/public/<tipo>/<nome>/`).
 - O **Copilot Chat** segue automaticamente as regras que o `plugin-new` copiou pra dentro do
-  seu plugin (`.github/copilot-instructions.md` + `.github/instructions/`). Selecione o
-  modelo **Claude Sonnet** ou **GPT-4.1** no seletor do Copilot.
+  seu plugin (`.github/copilot-instructions.md` + `.github/instructions/`). No plano
+  **Copilot Student** (e no Free) o modelo é escolhido **automaticamente** (modo *Auto*) — não
+  existe seletor de modelo, e tudo bem. Em um plano pago, o seletor aparece.
 - Sempre que o Moodle "não ver" uma mudança (novo arquivo de função, `db/`, `version.php`):
 
   ```
@@ -200,7 +210,8 @@ API, dependência soft (`class_exists()`), Web Services e Privacy Provider.
 | Site fora do ar depois de reabrir o Codespace | `bash .devcontainer/start.sh` |
 | Moodle não vê um plugin/mudança nova | `plugin-upgrade` |
 | Commit bloqueado pelo hook | Corrija o que o PHPCS apontou (`phpcbf <arquivo>` conserta boa parte). Não burle. |
-| Copilot não segue as regras | Troque o modelo para **Claude Sonnet** ou **GPT-4.1** no seletor do Copilot Chat. |
+| Copilot não segue as regras | Cole no chat a regra que ele ignorou (do `.github/copilot-instructions.md`) e peça para refazer o arquivo. Prompts curtos e **um arquivo por vez** funcionam melhor, principalmente no modo *Auto*. |
+| **O Codespace não mostra o plano de estudante** (aparece Copilot Free, ou pede para entrar/assinar) | 1) Veja o plano em <https://github.com/settings/copilot>. Se **não** for *Copilot Student*, a ativação ainda não aconteceu — siga a seção 0. 2) Se lá já aparece *Student*: no Codespace, `Ctrl+Shift+P` → **Developer: Reload Window** (ou, no menu de contas, saia e entre de novo no GitHub). O Codespace usa **a conta com que foi criado** — confira que é a conta do estudante, não outra. |
 | **"You don't have push permissions"** no repo do laboratório | **Esperado.** Você só lê este repo. Seu código vai para repositórios **seus** (seção 6). Nunca precisa commitar no `moodle-plugin-lab`. |
 | Nome estranho no Codespace ("miniature robot", etc.) | O GitHub gera um nome aleatório por Codespace. Inofensivo. Renomeie em github.com/codespaces → ⋯ → Rename, se quiser. |
 
