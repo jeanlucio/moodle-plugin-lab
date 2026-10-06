@@ -209,6 +209,11 @@ git add -A && git commit -m "block_greeting: hello world"
 No `git commit`, o hook roda: `php -l` → PHPCS → get_string → capability-strings → ESLint →
 Mustache → ... **Se bloquear, corrija o que ele apontou.** Não use `--no-verify`.
 
+> **O hook barrou de verdade? Peça ao Copilot para corrigir.** Com o modelo automático é
+> comum a IA errar algum detalhe (por exemplo, docblocks). Copie a mensagem de erro que o hook
+> imprimiu, cole no Copilot Chat e peça: *"o pre-commit bloqueou com este erro; corrija o
+> arquivo"*. Depois rode o `git commit` de novo. Leia o que ele mudou antes de aceitar.
+
 ```
 moodle-phpunit blocks/greeting
 ```
