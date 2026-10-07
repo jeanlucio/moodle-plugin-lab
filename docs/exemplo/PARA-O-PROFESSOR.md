@@ -33,17 +33,26 @@ O laboratório e o `mod_codereview` são **complementares**:
 
    ```
    Avalie o plugin Moodle block_greeting contra o SCOPE.md do repositório.
-   - Completude (40%): todos os arquivos da seção 6 do SCOPE.md existem e têm conteúdo real.
-     Arquivo previsto ausente, ou bloco que não renderiza a frase, vale nota baixa nesse
-     critério, MESMO que os checks automáticos estejam verdes.
+   - Completude (40%): todos os arquivos da seção 6 do SCOPE.md existem e têm conteúdo real,
+     exceto os marcados como gerados (amd/build), que você não recebe. Arquivo previsto
+     ausente, ou bloco que não renderiza a frase, vale nota baixa nesse critério, MESMO que
+     os checks automáticos estejam verdes.
    - Testes (20%): existe tests/greeting_test.php com @covers na classe de teste. Sem testes, 0.
    - Convenções (20%): cabeçalho de licença em TODOS os arquivos (PHP, JS, CSS, Mustache),
-     @copyright com o nome real do estudante (nunca "[Seu nome]" nem outro autor), strings em
-     ordem alfabética e iguais em en e pt_br, nenhum texto fixo fora de lang/.
-   - Arquitetura (20%): lógica na classe de classes/local/, bloco sem HTML, JS em amd/src com
-     build em amd/build.
+     @copyright com um nome de pessoa e o MESMO nome em todos os arquivos (nunca "[Seu nome]"
+     nem nomes diferentes entre arquivos; você não sabe quem é o estudante, então não tente
+     confirmar a identidade), strings em ordem alfabética e iguais em en e pt_br, nenhum
+     texto fixo fora de lang/.
+   - Arquitetura (20%): lógica na classe de classes/local/, bloco sem HTML, JS em amd/src
+     (o build em amd/build não é enviado a você; não penalize por não vê-lo).
    Escreva o feedback em português, apontando o arquivo e o que corrigir.
    ```
+
+   **O que a IA não enxerga** (por isso a rubrica acima não cobra essas coisas): ela não recebe
+   `.github/`, `amd/build/`, arquivos `.min.js` nem o repositório-molde, e não sabe o nome do
+   estudante. Se a rubrica pedir "o build existe" ou "o autor é Fulano", ela vai penalizar
+   todo mundo por algo que está certo. Para o build, olhe o resultado do job `grunt` no CI; para
+   a autoria, o painel de integridade e o seu conhecimento da turma.
 
    O que a rubrica **não** muda: a parcela dos checks automáticos continua sendo a proporção de
    jobs verdes. Para um exercício assim, vale baixar o peso das checagens (por exemplo 30/70) e
