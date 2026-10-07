@@ -21,6 +21,9 @@ Mustache ou SQL de um plugin Moodle, siga estas regras.
   (comentários `//` de licença + JSDoc com `@module`) e `templates/*.mustache` (bloco
   `{{! ... }}` de licença **antes** do bloco do `@template`). Os textos completos estão em
   `.github/instructions/frontend.instructions.md`. Arquivo sem esse cabeçalho está errado.
+- **`@copyright <ano> <autor>` de arquivo novo = o mesmo texto do `version.php` do próprio plugin.**
+  Nunca copie o autor de outro plugin do workspace (os plugins de referência têm outro autor) e
+  nunca deixe `[Seu nome]` ou `<autor>` literal.
 - `defined('MOODLE_INTERNAL') || die();` em arquivos com efeito colateral em escopo global
   (`db/*.php` que populam arrays, `settings.php`). **Não** em arquivos que só definem uma
   classe, nem em `lib.php` (só funções).

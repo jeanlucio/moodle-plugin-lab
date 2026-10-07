@@ -11,6 +11,11 @@ if [ $# -eq 0 ]; then
     exit 0
 fi
 
+if [ "${#*}" -gt 80 ] || printf '%s' "$*" | grep -q '[;$|`<>\\]'; then
+    echo "erro: nome inválido (use só o seu nome, até 80 caracteres, sem ; \$ | < >)." >&2
+    exit 1
+fi
+
 printf '%s\n' "$*" > "$CFG_DIR/author"
 touch "$CFG_DIR/.author-confirmed"
 echo "Autor definido: $*"

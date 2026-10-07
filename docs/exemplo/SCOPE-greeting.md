@@ -114,6 +114,10 @@ Nenhum.
 
 ## 8. Interface, Templates e Acessibilidade
 
+- **Cabeçalhos de licença (todos os arquivos novos):** o `@copyright` repete **exatamente** o que
+  o `plugin-new` colocou no `version.php` (`2026 <nome>`). Os exemplos abaixo usam
+  `[Seu nome]` só como espaço reservado — **troque** pelo nome do `version.php`. Nunca copie o
+  autor de outro plugin do workspace e nunca deixe `[Seu nome]` no arquivo.
 - **`templates/content.mustache`:** primeiro um bloco `{{! }}` só com a **licença GPL** e,
   depois dele, o bloco do `@template` (segundo bloco, como o verificador exige):
   ```

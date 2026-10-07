@@ -52,20 +52,19 @@ if command -v composer >/dev/null 2>&1 && [ -f "$TOOLS_DIR/phpstan/composer.json
         >/dev/null 2>&1 ) || echo "aviso: composer install em tools/phpstan falhou"
 fi
 
-# --- Confirmação do nome do autor no primeiro terminal interativo ---------------
+# --- .bashrc: só remove o token limitado do Codespace ----------------------------
+# O nome do autor NÃO é mais perguntado aqui (o 'read' era consumido por terminais que o
+# VS Code abre sozinho): o 'plugin-new' pergunta na primeira vez. O bloco antigo é substituído.
 MARKER="# >>> moodle-plugin-lab first-run >>>"
-if ! grep -qF "$MARKER" "$HOME/.bashrc" 2>/dev/null; then
-    cat >> "$HOME/.bashrc" <<EOF
+END_MARKER="# <<< moodle-plugin-lab first-run <<<"
+sed -i "\|${MARKER}|,\|${END_MARKER}|d" "$HOME/.bashrc" 2>/dev/null || true
+cat >> "$HOME/.bashrc" <<EOF
 
 $MARKER
 # O GITHUB_TOKEN automático do Codespace só dá acesso ao repo de origem. Removendo-o,
 # git e gh passam a usar a credencial completa do 'gh auth login' (repos do aluno).
 unset GITHUB_TOKEN GH_TOKEN
-if [ -t 1 ] && [ ! -f "\$HOME/.config/moodle-plugin-lab/.author-confirmed" ]; then
-    bash "$WORKSPACE/.devcontainer/first-run.sh" || true
-fi
-# <<< moodle-plugin-lab first-run <<<
+$END_MARKER
 EOF
-fi
 
 echo "moodle-dev-tools (curado) instalado."

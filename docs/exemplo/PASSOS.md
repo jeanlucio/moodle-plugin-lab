@@ -28,6 +28,9 @@ Abra a pasta no explorador e **leia o `SCOPE.md`** — ele descreve exatamente o
 >   plugin principal (`plugin-new <tipo> <nome>`, ex.: `plugin-new local meuplugino`). Ele
 >   sempre cria o esqueleto e já deixa um `SCOPE.md` **em branco** (o modelo de
 >   `docs/TEMPLATE_SCOPE.md`) para você preencher.
+> - Na **primeira vez** que você roda o `plugin-new`, ele pergunta o seu nome completo para o
+>   cabeçalho `@copyright` (Enter aceita o sugerido). Se o nome sair errado, use
+>   `set-author "Seu Nome"` antes de criar o plugin.
 > - O `cp ... SCOPE-greeting.md ...` é **só deste aquecimento**. Ele troca o `SCOPE.md` em
 >   branco por um **já preenchido**, para você pular o planejamento agora e focar no ciclo
 >   (código → verificação → CI). No seu plugin de verdade você **não** roda esse `cp`: abre o

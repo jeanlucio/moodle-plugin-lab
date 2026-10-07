@@ -13,7 +13,8 @@ set -euo pipefail
 LAB_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MOODLE_ROOT="$LAB_ROOT/moodle"
 PUBLIC="$MOODLE_ROOT/public"
-AUTHOR="$(cat "$HOME/.config/moodle-plugin-lab/author" 2>/dev/null || echo 'Seu Nome')"
+AUTHOR_CFG="$HOME/.config/moodle-plugin-lab"
+AUTHOR="$(cat "$AUTHOR_CFG/author" 2>/dev/null || true)"
 YEAR="$(date +%Y)"
 
 TYPE="${1:-}"
@@ -28,6 +29,17 @@ if ! [[ "$NAME" =~ ^[a-z][a-z0-9]*$ ]]; then
     echo "      (o nome de exibição, esse sim, pode ser em português — vai na lang string)" >&2
     exit 1
 fi
+
+# Nome do autor (@copyright): confirmado na primeira vez, só em terminal interativo. Valor
+# vazio ou estranho (ex.: comando colado por engano) é descartado.
+author_ok() {
+    [ -n "$1" ] && [ "${#1}" -le 80 ] && ! printf '%s' "$1" | grep -q '[;$|`<>\\]'
+}
+if { ! author_ok "$AUTHOR" || [ ! -f "$AUTHOR_CFG/.author-confirmed" ]; } && [ -t 0 ]; then
+    bash "$LAB_ROOT/.devcontainer/first-run.sh"
+    AUTHOR="$(cat "$AUTHOR_CFG/author" 2>/dev/null || true)"
+fi
+author_ok "$AUTHOR" || AUTHOR='Seu Nome'
 
 case "$TYPE" in
     local|filter|report) DIR="$TYPE" ;;

@@ -30,8 +30,9 @@ código que você desenvolve vai para **repositórios seus** (seção 6).
 1. Acesse o repositório do laboratório e clique em **Code → Codespaces →
    Create codespace on main**.
 2. Espere o VS Code abrir no navegador (a primeira vez leva ~1 min; depois, segundos).
-3. No primeiro terminal, confirme **seu nome completo** quando for perguntado — ele vai
-   nos cabeçalhos de licença dos arquivos que você criar.
+3. Na **primeira vez** que você rodar `plugin-new`, ele pergunta o **seu nome completo** (Enter
+   aceita o nome sugerido) — ele vai nos cabeçalhos de licença (`@copyright`) dos arquivos. Para
+   mudar depois: `set-author "Seu Nome"`.
 4. A aba do **Moodle** abre sozinha na porta 8000. Se não abrir, clique na aba **Ports**
    e no ícone de globo da porta 8000.
 
@@ -214,6 +215,7 @@ API, dependência soft (`class_exists()`), Web Services e Privacy Provider.
 | **O Codespace não mostra o plano de estudante** (aparece Copilot Free, ou pede para entrar/assinar) | 1) Veja o plano em <https://github.com/settings/copilot>. Se **não** for *Copilot Student*, a ativação ainda não aconteceu — siga a seção 0. 2) Se lá já aparece *Student*: no Codespace, `Ctrl+Shift+P` → **Developer: Reload Window** (ou, no menu de contas, saia e entre de novo no GitHub). O Codespace usa **a conta com que foi criado** — confira que é a conta do estudante, não outra. |
 | **"You don't have push permissions"** no repo do laboratório | **Esperado.** Você só lê este repo. Seu código vai para repositórios **seus** (seção 6). Nunca precisa commitar no `moodle-plugin-lab`. |
 | Erros vermelhos "**Undefined variable '$plugin'**" (ou `$string`, `$CFG`...) no `version.php`, nos arquivos de `lang/` etc. | São **falsos alarmes** do Intelephense: o Moodle define essas variáveis na hora da execução, então a extensão não as enxerga. O código está certo (quem vale é o hook de pre-commit). Para esconder: `git pull` e **Developer: Reload Window** (`Ctrl+Shift+P`). Se continuar (por exemplo, depois de usar "Adicionar Pasta ao Workspace"): `Ctrl+,` → busque `intelephense diagnostics enable` → **desmarque**; ou aba Extensões → Intelephense → **Desabilitar**. |
+| O `@copyright` dos arquivos está com **um comando de terminal**, um nome errado ou "Seu Nome" | O nome do autor ficou errado. Corrija com `set-author "Seu Nome Completo"` (vale para os próximos `plugin-new`). Nos arquivos que já existem, troque o texto depois de `@copyright  2026` pelo seu nome — **o mesmo em todos os arquivos**. Peça ao Copilot: *"troque o @copyright de todos os arquivos para 2026 Seu Nome"*. |
 | Nome estranho no Codespace ("miniature robot", etc.) | O GitHub gera um nome aleatório por Codespace. Inofensivo. Renomeie em github.com/codespaces → ⋯ → Rename, se quiser. |
 
 ## 10. Referência
