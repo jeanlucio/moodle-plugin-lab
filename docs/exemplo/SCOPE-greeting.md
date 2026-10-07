@@ -88,6 +88,7 @@ blocks/greeting/
 ├── .github/instructions/              ✅ (vem do plugin-new)
 ├── block_greeting.php                 ❌ classe do bloco
 ├── classes/local/greeting_text.php    ❌ de onde vem a frase (autoload, namespace)
+├── classes/privacy/provider.php       ❌ declara que não há dados pessoais (null_provider)
 ├── amd/src/greeting.js                ❌ módulo AMD (fonte)
 ├── amd/build/greeting.min.js          ⚙️ gerado por `npx grunt amd` — não editar à mão
 ├── db/

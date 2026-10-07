@@ -25,6 +25,30 @@ O laboratório e o `mod_codereview` são **complementares**:
    | Peso da revisão por IA | 40 |
    | Token do GitHub | seu PAT fine-grained, somente leitura (preferências do professor) |
 
+   **Por que a rubrica importa aqui:** o CI fica verde mesmo num plugin vazio (sem `tests/`, o job
+   `phpunit` não tem o que falhar), então a parte de "checagens automáticas" da nota pode dar
+   máximo para um plugin incompleto. Quem corrige isso é a rubrica: a IA recebe a descrição da
+   atividade, a rubrica, os resultados dos checks e o código, e pode ser instruída a penalizar o
+   que o CI não vê. Rubrica sugerida (cole no campo; ajuste os pesos):
+
+   ```
+   Avalie o plugin Moodle block_greeting contra o SCOPE.md do repositório.
+   - Completude (40%): todos os arquivos da seção 6 do SCOPE.md existem e têm conteúdo real.
+     Arquivo previsto ausente, ou bloco que não renderiza a frase, vale nota baixa nesse
+     critério, MESMO que os checks automáticos estejam verdes.
+   - Testes (20%): existe tests/greeting_test.php com @covers na classe de teste. Sem testes, 0.
+   - Convenções (20%): cabeçalho de licença em TODOS os arquivos (PHP, JS, CSS, Mustache),
+     @copyright com o nome real do estudante (nunca "[Seu nome]" nem outro autor), strings em
+     ordem alfabética e iguais em en e pt_br, nenhum texto fixo fora de lang/.
+   - Arquitetura (20%): lógica na classe de classes/local/, bloco sem HTML, JS em amd/src com
+     build em amd/build.
+   Escreva o feedback em português, apontando o arquivo e o que corrigir.
+   ```
+
+   O que a rubrica **não** muda: a parcela dos checks automáticos continua sendo a proporção de
+   jobs verdes. Para um exercício assim, vale baixar o peso das checagens (por exemplo 30/70) e
+   confiar na revisão por IA + sua aprovação final, que é sempre manual.
+
 3. **Aluno** submete a URL do repo dele + o SHA do commit.
 
 4. **`mod_codereview`** então:

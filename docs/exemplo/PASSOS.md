@@ -189,6 +189,21 @@ Isso compila `amd/src/greeting.js` em `amd/build/greeting.min.js` — o Moodle s
 nunca a fonte. **Nunca edite `amd/build` à mão**; rode `npx grunt amd` de novo sempre que
 mexer no `.js`.
 
+### Confira se criou tudo que o SCOPE pedia
+
+O CI fica **verde mesmo com o plugin incompleto** (sem testes, ele não tem o que falhar), então
+verde não prova que terminou. Para isso existe uma conferência mecânica: ela lê a árvore de
+arquivos da seção 6 do `SCOPE.md` e compara com o que existe na pasta.
+
+```
+cd /workspaces/moodle-plugin-lab
+moodle-scope-audit blocks/greeting
+```
+
+- `Nothing missing — every §6 entry exists on disk.` → está completo.
+- `Missing (N):` seguido de uma lista → são arquivos que o SCOPE previa e **ainda não existem**.
+  Volte à seção 2 e peça ao Copilot cada um que falta (lembre: um comando de cada vez).
+
 ### Veja o hook bloquear (de propósito)
 
 Antes do commit de verdade, quebre alguma coisa: apague um `;` no fim de uma linha do
