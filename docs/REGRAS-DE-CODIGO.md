@@ -215,7 +215,8 @@ quando populam array global.
 - **"Redefinir curso" é um terceiro gancho.** `mod_*` com tabela por estudante (`userid`, ou
   filha de uma) define em `lib.php` `<modname>_reset_userdata()` (mais
   `<modname>_reset_course_form_definition()` e `<modname>_reset_course_form_defaults()` quando
-  a limpeza é uma caixa que o professor marca, e `<modname>_reset_gradebook()` se tem nota). O core só chama quem define: sem isso o reset
+  a limpeza é uma caixa que o professor marca, e zerar o item de nota, `<modname>_grade_item_update($i, 'reset')`, junto das tentativas — o
+  core não chama nenhum `_reset_gradebook()`). O core só chama quem define: sem isso o reset
   zera conclusão e notas mas mantém as tentativas, e o estudante rematriculado reaparece como
   já tendo concluído, com o limite de tentativas gasto. Apague as tabelas por estudante (não o
   conteúdo do professor, como as questões) com a mesma subconsulta do `delete_instance()`.
