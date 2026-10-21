@@ -117,7 +117,9 @@ configurações.]
 >   do core como referência.
 > - **Limpeza ao excluir (decidir por tabela):** chave de instância própria
 >   (`blockinstanceid`, id do `mod_*`) → limpa em `instance_delete()` /
->   `<modname>_delete_instance()`; chave `courseid` → observer de `\core\event\course_deleted`.
+>   `<modname>_delete_instance()`; chave `courseid` → observer de `\core\event\course_deleted`;
+>   `mod_*` com tabela por estudante também define `<modname>_reset_userdata()` (+ formulário e
+>   defaults do "Redefinir curso" se a limpeza é opcional).
 >   O Moodle **não** cascateia tabela de plugin; `KEY TYPE="foreign"` é só documentação.
 
 ```sql

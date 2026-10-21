@@ -46,6 +46,10 @@ applyTo: "**/db/**"
 - **Tabela com id de instância própria** (`blockinstanceid`, id do `mod_*`): deletar em
   `block_base::instance_delete()` / `<modname>_delete_instance()` — **todas** as tabelas
   filhas, não só a linha-pai.
+- **`mod_*` com tabela por estudante** (`userid`, ou filha de uma): "Redefinir curso" também
+  precisa de `<modname>_reset_userdata()` em `lib.php` (mais `_reset_course_form_definition()`
+  e `_reset_course_form_defaults()` se a limpeza é uma caixa do professor, e `_reset_gradebook()`
+  se tem nota) — o core só chama quem define. Teste pelo `reset_course_userdata()` real, com a caixa marcada e desmarcada.
 
 ## `db/tasks.php`
 
