@@ -21,8 +21,10 @@
 
 > [!NOTE]
 > **Frankenstyle** (`type_name`): curto, em **inglês**, minúsculo, de preferência um único
-> token, **verificado livre no Moodle Plugins Directory** antes de fixar (página 404 +
-> `download.moodle.org/api/1.3/pluginfo.php?plugin=type_name` retorna "não encontrado").
+> token, **verificado livre no Moodle Marketplace** antes de fixar: abra no navegador
+> `https://marketplace.moodle.com/plugins/type_name` — página de erro 404 = nome livre; se abrir
+> a página de um plugin, o nome já existe. (Não use `curl` sem um `User-Agent` de navegador: o
+> site responde 403 a tudo, o que parece bloqueio e não resultado.)
 > Renomear depois é caro (cascateia em tabelas, capabilities, chaves de lang, caminhos).
 > O **Nome de exibição** (string `pluginname`) é separado e **localizável** — pode ser em
 > português.
@@ -261,14 +263,20 @@ configurações.]
 
 > [!IMPORTANT]
 > **Regra de conclusão customizada (`FEATURE_COMPLETION_HAS_RULES`)** — declarar o
-> `_supports()` e o checkbox no `mod_form.php` **não basta**. São necessárias 3 peças
-> (nenhuma pega por ferramenta estática):
+> `_supports()` e o checkbox no `mod_form.php` **não basta**. A regra não é avaliada, ou não dá
+> para desligá-la depois, sem 5 peças (nenhuma pega por ferramenta estática):
 > 1. `classes/completion/custom_completion.php` estendendo
 >    `\core_completion\activity_custom_completion`.
 > 2. `<type_name>_get_coursemodule_info()` em `lib.php` populando
 >    `customdata['customcompletionrules'][regra]`.
 > 3. `completion_info::update_state($cm, ..., $userid)` chamado no momento exato em que a
 >    condição rastreada muda (o Moodle não tem tarefa que recalcula conclusão automática).
+> 4. No `mod_form.php`: todo elemento da regra leva `$this->get_suffix()` no nome, e uma regra
+>    desmarcada é gravada como 0 em `data_postprocessing()` (o navegador não envia checkbox
+>    desmarcada; sem isso o professor nunca consegue tirar a regra).
+> 5. `<type_name>_get_completion_active_rule_descriptions()` recebe só o `$cm`.
+>
+> Detalhes e o porquê em `.github/instructions/activity.instructions.md`.
 
 > [!IMPORTANT]
 > **Integração com `core_ai` (Manager consumer):** respeitar o toggle de IA por
@@ -313,7 +321,8 @@ configurações.]
       core descarta a chave em silêncio).
 - [ ] Backup/restore com remapeamento de IDs, se há dados relacionais.
 - [ ] Limpeza ao excluir instância/curso (ver §5).
-- [ ] Conclusão customizada: as 3 peças da §11 existem e foram validadas ao vivo.
+- [ ] Conclusão customizada: as 5 peças da §11 existem e foram validadas ao vivo (inclusive
+      desmarcar a regra e salvar).
 - [ ] Constante/função mais nova que o Moodle mínimo suportado: protegida com `defined()` /
       `function_exists()`, nunca por checagem de versão hardcoded.
 

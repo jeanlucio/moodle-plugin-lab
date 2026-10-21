@@ -62,7 +62,8 @@ com `@package`, `@copyright`, `@license`, sem linha em branco entre eles.
 ## 2. Nomenclatura
 
 - **Frankenstyle:** componente **em inglês**, minúsculo, curto (idealmente um token, sem
-  `_` na parte do nome). Verificar livre no Plugins Directory antes de fixar. Renomear
+  `_` na parte do nome). Verificar livre no Moodle Marketplace antes de fixar (abrir
+  `https://marketplace.moodle.com/plugins/<frankenstyle>` no navegador: 404 = livre). Renomear
   depois cascateia em tabelas, capabilities, chaves de lang e caminhos.
 - **Nome de exibição** (string `pluginname`): separado do Frankenstyle e **localizável** —
   pode ser em português.
@@ -441,8 +442,8 @@ valor no `grade_item` buscado, nunca só o retorno `GRADE_UPDATE_OK`.
 
 ### Conclusão customizada (`FEATURE_COMPLETION_HAS_RULES`)
 
-Declarar o `_supports()` e o checkbox no `mod_form.php` não basta. As 3 peças (nenhuma pega
-por ferramenta estática):
+Declarar o `_supports()` e o checkbox no `mod_form.php` não basta: a regra não é avaliada, ou
+não dá para desligá-la depois, sem as 5 peças (nenhuma pega por ferramenta estática):
 
 1. `classes/completion/custom_completion.php` estendendo
    `\core_completion\activity_custom_completion` (`get_state()`,
@@ -454,8 +455,20 @@ por ferramenta estática):
    existente exige purga de cache).
 3. `completion_info::update_state($cm, ..., $userid)` no momento exato em que a condição
    muda — o Moodle não tem tarefa que recalcula conclusão automática.
+4. No `mod_form.php`, todo elemento da regra leva `$this->get_suffix()` no nome (campo, grupo,
+   retorno de `add_completion_rules()` e chaves lidas em `completion_rule_enabled()`,
+   `validation()` e `data_preprocessing()`): a página "Conclusão padrão da atividade" mostra o
+   mesmo formulário com o sufixo `_<modname>` e apaga a regra cujo nome não o tem. E uma regra
+   desmarcada precisa ser gravada como 0 em `data_postprocessing()` (modelo:
+   `mod/forum/mod_form.php`): o navegador não envia checkbox desmarcada nem campo desativado por
+   `disabledIf()`, então sem isso o `update_record()` mantém o valor antigo e o professor nunca
+   consegue tirar a regra. Zere também quando a conclusão não for automática.
+5. `<modname>_get_completion_active_rule_descriptions(stdClass|cm_info $cm)` recebe só o `$cm`
+   (o core a chama com um único argumento).
 
-Validar ao vivo (criar instância, satisfazer a condição, ver o selo na página).
+Validar ao vivo (criar instância, satisfazer a condição, ver o selo na página, **desmarcar a
+regra e salvar**). No teste, afirme a coluna no banco após `<modname>_update_instance()` sem a
+chave e chame `set_suffix('_<modname>')` antes de `add_completion_rules()`.
 
 ### `mod_*` — renderização da página
 
