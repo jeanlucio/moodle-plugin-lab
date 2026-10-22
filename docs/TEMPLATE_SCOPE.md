@@ -311,6 +311,7 @@ configurações.]
 - [ ] Query por ID externo inclui filtro de contexto/curso/instância já validado.
 - [ ] `require_sesskey()` / `confirm_sesskey()` em toda rota destrutiva ou POST.
 - [ ] Sem `echo $var` — `s()`, `format_string()`, `format_text()`.
+- [ ] Nome que vai para `{{ }}`, atributo ou JSON: não passe o resultado de `format_string()` (ele devolve HTML, `&` vira `&amp;`, e o template escapa de novo). Use um `plain_string()` do plugin (`format_string` → `strip_tags` → `html_entity_decode`) e deixe o template escapar uma vez. Só para campo de texto simples; campo com editor usa `format_text()`. Teste com o nome `A & B > 3`.
 - [ ] JS só em `amd/src/`, carregado via `js_call_amd()`.
 - [ ] SQL só com placeholders (`?` / `:nome`).
 - [ ] pt-BR: "estudante", nunca "aluno". Chaves de lang em ordem alfabética. Sem comentário
