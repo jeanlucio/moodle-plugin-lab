@@ -1,6 +1,6 @@
 # Imagem base da Microsoft: PHP 8.3 (CLI), Composer, git, usuário não-root "vscode".
 # PHP 8.3 é a faixa recomendada para Moodle 5.2.
-FROM mcr.microsoft.com/devcontainers/php:1-8.3-bookworm
+FROM mcr.microsoft.com/devcontainers/php:4-8.3-bookworm
 
 # ---------------------------------------------------------------------------
 # Banco de dados e bibliotecas de sistema exigidas pelas extensões do PHP.
